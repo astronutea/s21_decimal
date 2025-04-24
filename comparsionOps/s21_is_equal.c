@@ -1,16 +1,16 @@
 #include "s21_decimal.h"
 
-int s21_is_equal(s21_decimal value1, s21_decimal value2) {
+int s21_is_equal(s21_decimal value_1, s21_decimal value_2) {
     int result = 1;
 
-    if (value1.sign != value2.sign) return 0;
-    if (value1.exponent != value2.exponent) return 0;
+    if (s21_get_sign(&value_1) != s21_get_sign(&value_2)) return 0;
+    if (s21_get_scale(&value_1) != s21_get_scale(&value_2)) return 0;
 
-    int digits_count = value1.exponent + 1;
+    int digits_count = value_1.exponent + 1;
     if (digits_count > 96) digits_count = 96;
 
     for (int i = digits_count - 1; i >= 0; i--) {
-        if (value1.digits[i] != value2.digits[i]) {
+        if (value_1.digits[i] != value_2.digits[i]) {
             result = 0;
             break;
         }
