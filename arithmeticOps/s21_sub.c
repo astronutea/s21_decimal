@@ -1,6 +1,4 @@
-#include "arithmetic.h"
-
-#include "arithmetic.h"
+#include "../s21_decimal.h"
 
 int s21_sub(s21_decimal *num1, s21_decimal *num2, s21_decimal *result) {
     s21_null_decimal(result);

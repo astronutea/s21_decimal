@@ -21,7 +21,7 @@ int s21_round(s21_decimal value, s21_decimal *result) {
     temp.bits[3] = 0;  
 
     
-    s21_add(temp, half, &temp);
+    s21_add(&temp, &half, &temp);
 
     
     for (int i = 0; i < scale; i++) {
