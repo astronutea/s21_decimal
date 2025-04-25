@@ -1,35 +1,41 @@
 #include "s21_decimal.h"
 
 int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
-    int answer = 0;
-
+    int result = 0;
     if (s21_is_equal(value_1, value_2)) {
-        answer = 0;
+        return 0;
+    }
+
+    int sign1 = s21_get_sign(&value_1);
+    int sign2 = s21_get_sign(&value_2);
+
+    if (sign1 != sign2) {
+        result = sign1 > sign2;
     } else {
-        if (value_1.sign != value_2.sign) {
-            if (value_1.sign > value_2.sign) {
-                answer = 1;
-            } else {
-                answer = 0;
-            }
-        } else {
-            for (int i = 95; i >= 0 && answer == 0; --i) {
-                if (value_1.digits[i] < value_2.digits[i]) {
-                    if (value_1.sign == 0) {
-                        answer = 1;
+        s21_normalize(&value_1, &value_2);
+
+        for (int i = 95; i >= 0 && !result; i--) {
+            int bit1 = s21_get_bit(&value_1, i);
+            int bit2 = s21_get_bit(&value_2, i);
+
+            if (bit1 != bit2) {
+                if (sign1) {
+                    if (bit1 > bit2) {
+                        result = 1;
                     } else {
-                        answer = 0;
+                        result = 0;
                     }
-                } else if (value_1.digits[i] > value_2.digits[i]) {
-                    if (value_1.sign == 0) {
-                        answer = 0;
+                } else {
+                    if (bit1 < bit2) {
+                        result = 1;
                     } else {
-                        answer = 1;
+                        result = 0;
                     }
                 }
+                break;
             }
         }
     }
 
-    return answer;
+    return result;
 }
