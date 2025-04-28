@@ -2,8 +2,6 @@
 
 #include "../s21_decimal.h"
 
-// #include "arithmetic.h"
-
 START_TEST(test_addition) {
   s21_decimal num1, num2, result, expected;
   // Инициализация num1 и num2

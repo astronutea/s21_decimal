@@ -20,6 +20,7 @@ int s21_div_mod(s21_decimal dividend, s21_decimal divisor,
                 s21_decimal *quotient, s21_decimal *remainder);
 
 int s21_add(s21_decimal *num1, s21_decimal *num2, s21_decimal *result);
+int s21_sub(s21_decimal *num1, s21_decimal *num2, s21_decimal *result);
 int is_half_or_more(s21_decimal *frac);
 int is_exact_half(s21_decimal *frac);
 int s21_bank_round(s21_decimal *num1, s21_decimal *num2, s21_decimal *result,
