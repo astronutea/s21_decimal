@@ -1,24 +1,4 @@
-#include "arithmetic.h"
-
-int s21_get_sign(s21_decimal *num) {
-    return (num->bits[3] >> 31) & 1;
-}
-
-void s21_set_sign(s21_decimal *num, int sign) {
-    if (sign)
-        num->bits[3] |= (1u << 31);
-    else
-        num->bits[3] &= ~(1u << 31);
-}
-
-int s21_get_scale(s21_decimal *num) {
-    return (num->bits[3] >> 16) & 0xFF;
-}
-
-void s21_set_scale(s21_decimal *num, int scale) {
-    num->bits[3] &= ~(0xFFu << 16);
-    num->bits[3] |= (scale << 16);
-}
+#include "../s21_decimal.h"
 
 int s21_mul10(s21_decimal *num) {
     unsigned long long carry = 0;

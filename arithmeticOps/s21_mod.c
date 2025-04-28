@@ -1,6 +1,4 @@
-#include "arithmetic.h"
-
-#include "arithmetic.h"
+#include "../s21_decimal.h"
 
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     s21_null_decimal(result);
@@ -21,7 +19,7 @@ int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     status = s21_sub(&value_1, &multiplied, &temp);
 
     if (status == 1) {
-        s21_truncate(&temp, result);
+        s21_truncate(temp, result);
         status = 0;
     } else {
         *result = temp;

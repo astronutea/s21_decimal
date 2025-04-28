@@ -1,4 +1,4 @@
-#include "arithmetic.h"
+#include "../s21_decimal.h"
 
 int is_half_or_more(s21_decimal *frac) {
     s21_decimal half = {{5, 0, 0, 0}};
