@@ -1,6 +1,10 @@
+#include <stdint.h>
+
 #include "../s21_decimal.h"
 
 int s21_sub(s21_decimal *num1, s21_decimal *num2, s21_decimal *result) {
+  if (!num1 || !num2 || !result) return 1;
+
   s21_null_decimal(result);
   int status = 0;
 
@@ -15,6 +19,7 @@ int s21_sub(s21_decimal *num1, s21_decimal *num2, s21_decimal *result) {
     s21_set_sign(&b_copy, sign1);
     status = s21_add(num1, &b_copy, result);
     s21_set_scale(result, scale);
+    s21_set_sign(result, sign1);
     return status;
   }
 
@@ -28,16 +33,16 @@ int s21_sub(s21_decimal *num1, s21_decimal *num2, s21_decimal *result) {
     right = *num1;
   }
 
-  unsigned long long borrow = 0;
+  uint64_t borrow = 0;
   for (int i = 0; i < 3; i++) {
-    unsigned long long minuend = (unsigned long long)left.bits[i];
-    unsigned long long subtrahend = (unsigned long long)right.bits[i] + borrow;
+    uint64_t minuend = (uint64_t)(uint32_t)left.bits[i];
+    uint64_t subtrahend = (uint64_t)(uint32_t)right.bits[i] + borrow;
 
     if (minuend < subtrahend) {
-      result->bits[i] = (int)(0x100000000 + minuend - subtrahend);
+      result->bits[i] = (int)(uint32_t)(0x100000000ULL + minuend - subtrahend);
       borrow = 1;
     } else {
-      result->bits[i] = (int)(minuend - subtrahend);
+      result->bits[i] = (int)(uint32_t)(minuend - subtrahend);
       borrow = 0;
     }
   }

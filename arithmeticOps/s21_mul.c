@@ -55,7 +55,8 @@ int s21_mul(s21_decimal num1, s21_decimal num2, s21_decimal *result) {
   }
 
   for (int i = 0; i < 3; i++) {
-    result->bits[i] = (int)temp[i];
+    result->bits[i] = (unsigned int)
+        temp[i];  // вот тут надо вместо (int) написать (unsigned int)
   }
 
   s21_set_scale(result, result_scale);

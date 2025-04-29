@@ -1,18 +1,20 @@
+#include <stdint.h>
+
 #include "../s21_decimal.h"
 
 int s21_mul10(s21_decimal *num) {
-  unsigned long long carry = 0;
+  uint64_t carry = 0;
   int status = 0;
 
   // Проверяем переполнение перед умножением
-  if (num->bits[2] >= 0x19999999) {
+  if ((uint32_t)num->bits[2] >= 0x19999999) {
     return 1;
   }
 
   // Умножаем на 10
   for (int i = 0; i < 3; i++) {
-    unsigned long long temp = (unsigned long long)num->bits[i] * 10 + carry;
-    num->bits[i] = (int)temp;
+    uint64_t temp = (uint64_t)(uint32_t)num->bits[i] * 10 + carry;
+    num->bits[i] = (int)(uint32_t)temp;
     carry = temp >> 32;
   }
 
@@ -77,28 +79,27 @@ int s21_div_mod(s21_decimal dividend, s21_decimal divisor,
   // Простое деление
   while (s21_is_greater_or_equal(temp_dividend, temp_divisor)) {
     // Вычитаем делитель из делимого
-    unsigned long long borrow = 0;
+    uint64_t borrow = 0;
     for (int i = 0; i < 3; i++) {
-      unsigned long long minuend = (unsigned long long)temp_dividend.bits[i];
-      unsigned long long subtrahend =
-          (unsigned long long)temp_divisor.bits[i] + borrow;
+      uint64_t minuend = (uint64_t)(uint32_t)temp_dividend.bits[i];
+      uint64_t subtrahend = (uint64_t)(uint32_t)temp_divisor.bits[i] + borrow;
 
       if (minuend < subtrahend) {
-        temp.bits[i] = (int)(0x100000000 + minuend - subtrahend);
+        temp.bits[i] = (int)(uint32_t)(0x100000000ULL + minuend - subtrahend);
         borrow = 1;
       } else {
-        temp.bits[i] = (int)(minuend - subtrahend);
+        temp.bits[i] = (int)(uint32_t)(minuend - subtrahend);
         borrow = 0;
       }
     }
     temp_dividend = temp;
 
     // Увеличиваем частное
-    unsigned long long carry = 0;
+    uint64_t carry = 0;
     for (int i = 0; i < 3; i++) {
-      unsigned long long sum = (unsigned long long)quotient->bits[i] +
-                               (unsigned long long)one.bits[i] + carry;
-      quotient->bits[i] = (int)(sum & 0xFFFFFFFF);
+      uint64_t sum = (uint64_t)(uint32_t)quotient->bits[i] +
+                     (uint64_t)(uint32_t)one.bits[i] + carry;
+      quotient->bits[i] = (int)(uint32_t)(sum & 0xFFFFFFFF);
       carry = sum >> 32;
     }
   }
