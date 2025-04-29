@@ -17,27 +17,16 @@ int s21_div(s21_decimal num1, s21_decimal num2, s21_decimal *result) {
 
   int result_scale = scale1 - scale2;
 
-  int added_scale = 0;
-  // s21_decimal ten = {{10, 0, 0, 0}};
-  s21_decimal temp_num1 = num1;
-
-  s21_decimal quotient = {0}, remainder = {0};
-
-  while (added_scale + result_scale < 28) {
-    s21_div_mod(temp_num1, num2, &quotient, &remainder);
-    if (remainder.bits[0] == 0 && remainder.bits[1] == 0 &&
-        remainder.bits[2] == 0)
-      break;
-
-    if (s21_mul10(&temp_num1)) break;
-    added_scale++;
+  // Нормализуем числа
+  if (s21_normalize(&num1, &num2)) {
+    return 1;  // Ошибка переполнения при нормализации
   }
 
-  result_scale += added_scale;
+  s21_decimal quotient = {0}, remainder = {0};
+  s21_div_mod(num1, num2, &quotient, &remainder);
 
-  s21_div_mod(temp_num1, num2, &quotient, &remainder);
-
-  if (quotient.bits[2] >= 0xFFFFFFFF) {
+  // Проверяем переполнение
+  if ((unsigned int)quotient.bits[2] >= 0xFFFFFFFF) {
     status = 1;
   } else {
     *result = quotient;
