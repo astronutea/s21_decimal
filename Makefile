@@ -2,24 +2,61 @@ CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 TEST_FLAGS = -lcheck -lm -lpthread
 
-SRC_DIR = .
-TEST_DIR = tests
+# Исходные файлы для разных операций
+ARITHMETIC_SRC = arithmeticOps/s21_add.c arithmeticOps/s21_sub.c arithmeticOps/s21_mul.c arithmeticOps/s21_div.c arithmeticOps/s21_mod.c arithmeticOps/support_func.c
+OTHER_SRC = other/s21_floor.c other/s21_negate.c other/s21_round.c other/s21_truncate.c
+COMPARSION_SRC = comparsionOps/s21_is_equal.c comparsionOps/s21_is_greater.c comparsionOps/s21_is_greater_or_equal.c comparsionOps/s21_is_less.c comparsionOps/s21_is_less_or_equal.c comparsionOps/s21_is_not_equal.c
 
-SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
-TEST_FILES = $(wildcard $(TEST_DIR)/*.c)
+# Тестовые файлы
+ARITHMETIC_TEST = tests/arithmetic_test.c
+OTHER_TEST = tests/other_test.c
+COMPARSION_TEST = tests/comparsion_test.c
+ALL_TESTS = tests/test.c
 
-all: s21_decimal.a test
+# Общие исходные файлы
+COMMON_SRC = $(ARITHMETIC_SRC) $(OTHER_SRC) $(COMPARSION_SRC)
 
-s21_decimal.a: $(SRC_FILES)
-	$(CC) $(CFLAGS) -c $(SRC_FILES)
-	ar rcs s21_decimal.a *.o
+all: test_all
+
+# Компиляция библиотек
+arithmetic.a: $(ARITHMETIC_SRC)
+	$(CC) $(CFLAGS) -c $(ARITHMETIC_SRC)
+	ar rcs arithmetic.a *.o
 	rm -f *.o
 
-test: s21_decimal.a
-	$(CC) $(CFLAGS) $(TEST_FILES) s21_decimal.a -o test $(TEST_FLAGS)
-	./test
+other.a: $(OTHER_SRC)
+	$(CC) $(CFLAGS) -c $(OTHER_SRC)
+	ar rcs other.a *.o
+	rm -f *.o
+
+comparsion.a: $(COMPARSION_SRC)
+	$(CC) $(CFLAGS) -c $(COMPARSION_SRC)
+	ar rcs comparsion.a *.o
+	rm -f *.o
+
+all.a: $(COMMON_SRC)
+	$(CC) $(CFLAGS) -c $(COMMON_SRC)
+	ar rcs all.a *.o
+	rm -f *.o
+
+# Компиляция и запуск тестов
+test_arithmetic: arithmetic.a
+	$(CC) $(CFLAGS) $(ARITHMETIC_TEST) arithmetic.a -o test_arithmetic $(TEST_FLAGS)
+	./test_arithmetic
+
+test_other: other.a
+	$(CC) $(CFLAGS) $(OTHER_TEST) other.a -o test_other $(TEST_FLAGS)
+	./test_other
+
+test_comparsion: comparsion.a
+	$(CC) $(CFLAGS) $(COMPARSION_TEST) comparsion.a -o test_comparsion $(TEST_FLAGS)
+	./test_comparsion
+
+test_all: all.a
+	$(CC) $(CFLAGS) $(ALL_TESTS) all.a -o test_all $(TEST_FLAGS)
+	./test_all
 
 clean:
-	rm -f *.o *.a test
+	rm -f *.o *.a test_arithmetic test_other test_comparsion test_all
 
-.PHONY: all test clean
+.PHONY: all test_arithmetic test_other test_comparsion test_all clean
