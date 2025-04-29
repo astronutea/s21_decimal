@@ -14,31 +14,29 @@ int s21_round(s21_decimal value, s21_decimal *result) {
     return 0;
   }
 
-  // Сначала округляем вниз (отбрасываем дробную часть)
-  s21_truncate(temp, &temp);
+  // Убираем знак и масштаб для деления
+  s21_set_sign(&temp, 0);
+  s21_set_scale(&temp, 0);
 
-  // Проверяем, нужно ли округлять вверх
+  // Делим на 10^scale
+  s21_decimal ten = {{10, 0, 0, 0}};
+  s21_decimal five = {{5, 0, 0, 0}};
   s21_decimal one = {{1, 0, 0, 0}};
-  s21_decimal check = temp;
-  s21_decimal diff;
 
-  // Устанавливаем тот же масштаб для сравнения
-  s21_set_scale(&check, scale);
+  // Получаем целую часть и последнюю цифру
+  s21_decimal last_digit = temp;
+  for (int i = 0; i < scale - 1; i++) {
+    s21_div(last_digit, ten, &last_digit);
+  }
+  s21_mod(last_digit, ten, &last_digit);
 
-  // Вычисляем разницу между оригинальным числом и округленным вниз
-  if (sign) {
-    s21_sub(&check, &value, &diff);
-  } else {
-    s21_sub(&value, &check, &diff);
+  // Делим на 10^scale
+  for (int i = 0; i < scale; i++) {
+    s21_div(temp, ten, &temp);
   }
 
-  // Умножаем разницу на 10, чтобы сравнить с 0.5
-  s21_decimal ten = {{10, 0, 0, 0}};
-  s21_mul(diff, ten, &diff);
-
-  // Если разница >= 5, округляем вверх
-  s21_decimal five = {{5, 0, 0, 0}};
-  if (s21_is_greater_or_equal(diff, five)) {
+  // Если последняя цифра >= 5, округляем вверх
+  if (s21_is_greater_or_equal(last_digit, five)) {
     if (sign) {
       s21_sub(&temp, &one, &temp);
     } else {
@@ -46,6 +44,9 @@ int s21_round(s21_decimal value, s21_decimal *result) {
     }
   }
 
+  // Восстанавливаем знак
+  s21_set_sign(&temp, sign);
   *result = temp;
+
   return 0;
 }

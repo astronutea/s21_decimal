@@ -6,7 +6,6 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
   }
 
   s21_decimal temp = value;
-  s21_decimal one = {{1, 0, 0, 0}};
   int scale = s21_get_scale(&temp);
   int sign = s21_get_sign(&temp);
 
@@ -15,22 +14,33 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
     return 0;
   }
 
-  // Сначала округляем вниз (отбрасываем дробную часть)
-  s21_truncate(temp, &temp);
+  // Убираем знак и масштаб для деления
+  s21_set_sign(&temp, 0);
+  s21_set_scale(&temp, 0);
 
-  // Для отрицательных чисел всегда вычитаем 1, если была дробная часть
+  // Делим на 10^scale
+  s21_decimal ten = {{10, 0, 0, 0}};
+  s21_decimal one = {{1, 0, 0, 0}};
+
+  // Получаем целую часть
+  for (int i = 0; i < scale; i++) {
+    s21_div(temp, ten, &temp);
+  }
+
+  // Для отрицательных чисел, если был остаток, добавляем 1
   if (sign) {
-    // Проверяем, была ли дробная часть
     s21_decimal check = temp;
-    s21_set_scale(&check, scale);
-
-    // Если после truncate значение не равно оригинальному,
-    // значит была дробная часть
+    for (int i = 0; i < scale; i++) {
+      s21_mul(check, ten, &check);
+    }
     if (!s21_is_equal(check, value)) {
-      s21_sub(&temp, &one, &temp);
+      s21_add(&temp, &one, &temp);
     }
   }
 
+  // Восстанавливаем знак
+  s21_set_sign(&temp, sign);
   *result = temp;
+
   return 0;
 }
