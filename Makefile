@@ -7,6 +7,7 @@ ARITHMETIC_SRC = arithmeticOps/s21_add.c arithmeticOps/s21_sub.c arithmeticOps/s
 OTHER_SRC = other/s21_floor.c other/s21_negate.c other/s21_round.c other/s21_truncate.c
 COMPARSION_SRC = comparsionOps/s21_is_equal.c comparsionOps/s21_is_greater.c comparsionOps/s21_is_greater_or_equal.c comparsionOps/s21_is_less.c comparsionOps/s21_is_less_or_equal.c comparsionOps/s21_is_not_equal.c
 BIT_SRC = bitOps/s21_get_bit.c bitOps/s21_get_scale.c bitOps/s21_get_sign.c bitOps/s21_null_decimal.c bitOps/s21_set_scale.c bitOps/s21_set_sign.c
+SUPPORT_SRC = arithmeticOps/support_func.c
 
 # Тестовые файлы
 ARITHMETIC_TEST = tests/arithmetic_test.c
@@ -30,8 +31,8 @@ other.a: $(OTHER_SRC) $(ARITHMETIC_SRC) $(COMPARSION_SRC) $(BIT_SRC)
 	ar rcs other.a *.o
 	rm -f *.o
 
-comparsion.a: $(COMPARSION_SRC) $(BIT_SRC)
-	$(CC) $(CFLAGS) -c $(COMPARSION_SRC) $(BIT_SRC)
+comparsion.a: $(COMPARSION_SRC) $(BIT_SRC) $(SUPPORT_SRC)
+	$(CC) $(CFLAGS) -c $(COMPARSION_SRC) $(BIT_SRC) $(SUPPORT_SRC)
 	ar rcs comparsion.a *.o
 	rm -f *.o
 
