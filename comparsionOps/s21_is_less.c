@@ -1,4 +1,6 @@
-#include "s21_decimal.h"
+#include <stdint.h>
+
+#include "../s21_decimal.h"
 
 int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
   // Проверяем знаки
@@ -14,10 +16,12 @@ int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
   s21_normalize(&value_1, &value_2);
 
   // Сравниваем биты
-  for (int i = 3; i >= 0; i--) {
-    if (value_1.bits[i] < value_2.bits[i]) {
+  for (int i = 2; i >= 0; i--) {
+    uint32_t v1 = (uint32_t)value_1.bits[i];
+    uint32_t v2 = (uint32_t)value_2.bits[i];
+    if (v1 < v2) {
       return sign1 == 0;
-    } else if (value_1.bits[i] > value_2.bits[i]) {
+    } else if (v1 > v2) {
       return sign1 == 1;
     }
   }
