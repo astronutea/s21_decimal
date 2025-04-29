@@ -14,22 +14,31 @@ int s21_round(s21_decimal value, s21_decimal *result) {
     return 0;
   }
 
-  // Округляем до ближайшего целого
+  // Сначала округляем вниз (отбрасываем дробную часть)
   s21_truncate(temp, &temp);
 
   // Проверяем, нужно ли округлять вверх
-  s21_decimal half = {{5, 0, 0, 0}};
-  s21_set_scale(&half, 1);  // 0.5
+  s21_decimal one = {{1, 0, 0, 0}};
+  s21_decimal check = temp;
+  s21_decimal diff;
 
+  // Устанавливаем тот же масштаб для сравнения
+  s21_set_scale(&check, scale);
+
+  // Вычисляем разницу между оригинальным числом и округленным вниз
   if (sign) {
-    s21_set_sign(&half, 1);
+    s21_sub(&check, &value, &diff);
+  } else {
+    s21_sub(&value, &check, &diff);
   }
 
-  s21_decimal remainder;
-  s21_div_mod(value, temp, NULL, &remainder);
+  // Умножаем разницу на 10, чтобы сравнить с 0.5
+  s21_decimal ten = {{10, 0, 0, 0}};
+  s21_mul(diff, ten, &diff);
 
-  if (s21_is_greater_or_equal(remainder, half)) {
-    s21_decimal one = {{1, 0, 0, 0}};
+  // Если разница >= 5, округляем вверх
+  s21_decimal five = {{5, 0, 0, 0}};
+  if (s21_is_greater_or_equal(diff, five)) {
     if (sign) {
       s21_sub(&temp, &one, &temp);
     } else {

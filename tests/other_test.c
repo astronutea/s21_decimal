@@ -31,6 +31,45 @@ START_TEST(test_floor) {
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
   ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+
+  // Тест 3: число без дробной части
+  s21_null_decimal(&num);
+  num.bits[0] = 12345;
+  s21_set_scale(&num, 0);  // 12345
+
+  s21_null_decimal(&expected);
+  expected.bits[0] = 12345;  // floor(12345) = 12345
+
+  status = s21_floor(num, &result);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(result.bits[0], expected.bits[0]);
+
+  // Тест 4: отрицательное число без дробной части
+  s21_null_decimal(&num);
+  num.bits[0] = 12345;
+  s21_set_scale(&num, 0);
+  s21_set_sign(&num, 1);  // -12345
+
+  s21_null_decimal(&expected);
+  expected.bits[0] = 12345;
+  s21_set_sign(&expected, 1);  // floor(-12345) = -12345
+
+  status = s21_floor(num, &result);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(result.bits[0], expected.bits[0]);
+  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+
+  // Тест 5: число с большой дробной частью
+  s21_null_decimal(&num);
+  num.bits[0] = 12345;
+  s21_set_scale(&num, 4);  // 1.2345
+
+  s21_null_decimal(&expected);
+  expected.bits[0] = 1;  // floor(1.2345) = 1
+
+  status = s21_floor(num, &result);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(result.bits[0], expected.bits[0]);
 }
 END_TEST
 
@@ -91,6 +130,45 @@ START_TEST(test_round) {
 
   s21_null_decimal(&expected);
   expected.bits[0] = 12;  // round(12.340) = 12
+
+  status = s21_round(num, &result);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(result.bits[0], expected.bits[0]);
+
+  // Тест 3: округление ровно до половины
+  s21_null_decimal(&num);
+  num.bits[0] = 12350;
+  s21_set_scale(&num, 3);  // 12.350
+
+  s21_null_decimal(&expected);
+  expected.bits[0] = 12;  // round(12.350) = 12
+
+  status = s21_round(num, &result);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(result.bits[0], expected.bits[0]);
+
+  // Тест 4: отрицательное число с округлением вверх
+  s21_null_decimal(&num);
+  num.bits[0] = 12345;
+  s21_set_scale(&num, 3);
+  s21_set_sign(&num, 1);  // -12.345
+
+  s21_null_decimal(&expected);
+  expected.bits[0] = 12;
+  s21_set_sign(&expected, 1);  // round(-12.345) = -12
+
+  status = s21_round(num, &result);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(result.bits[0], expected.bits[0]);
+  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+
+  // Тест 5: число с большой дробной частью
+  s21_null_decimal(&num);
+  num.bits[0] = 12345;
+  s21_set_scale(&num, 4);  // 1.2345
+
+  s21_null_decimal(&expected);
+  expected.bits[0] = 1;  // round(1.2345) = 1
 
   status = s21_round(num, &result);
   ck_assert_int_eq(status, 0);
