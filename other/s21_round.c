@@ -5,27 +5,38 @@ int s21_round(s21_decimal value, s21_decimal *result) {
     return 1;
   }
 
-  s21_decimal one = {{1, 0, 0, 0}};
-  s21_decimal half = {{5, 0, 0, 0x10000}};
   s21_decimal temp = value;
-  int scale = (value.bits[3] >> 16) & 0xFF;
+  int scale = s21_get_scale(&temp);
+  int sign = s21_get_sign(&temp);
 
   if (scale == 0) {
     *result = value;
     return 0;
   }
 
-  int sign = (value.bits[3] >> 31) & 1;
-  temp.bits[3] = 0;
+  // Округляем до ближайшего целого
+  s21_truncate(temp, &temp);
 
-  s21_add(&temp, &half, &temp);
+  // Проверяем, нужно ли округлять вверх
+  s21_decimal half = {{5, 0, 0, 0}};
+  s21_set_scale(&half, 1);  // 0.5
 
-  for (int i = 0; i < scale; i++) {
-    s21_div(temp, (s21_decimal){{10, 0, 0, 0}}, &temp);
+  if (sign) {
+    s21_set_sign(&half, 1);
   }
 
-  temp.bits[3] |= (sign << 31);
-  *result = temp;
+  s21_decimal remainder;
+  s21_div_mod(value, temp, NULL, &remainder);
 
+  if (s21_is_greater_or_equal(remainder, half)) {
+    s21_decimal one = {{1, 0, 0, 0}};
+    if (sign) {
+      s21_sub(&temp, &one, &temp);
+    } else {
+      s21_add(&temp, &one, &temp);
+    }
+  }
+
+  *result = temp;
   return 0;
 }

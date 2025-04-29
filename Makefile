@@ -24,8 +24,8 @@ arithmetic.a: $(ARITHMETIC_SRC)
 	ar rcs arithmetic.a *.o
 	rm -f *.o
 
-other.a: $(OTHER_SRC)
-	$(CC) $(CFLAGS) -c $(OTHER_SRC)
+other.a: $(OTHER_SRC) $(ARITHMETIC_SRC) $(COMPARSION_SRC)
+	$(CC) $(CFLAGS) -c $(OTHER_SRC) $(ARITHMETIC_SRC) $(COMPARSION_SRC)
 	ar rcs other.a *.o
 	rm -f *.o
 

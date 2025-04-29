@@ -6,19 +6,22 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
   }
 
   s21_decimal temp = value;
-  int scale = (value.bits[3] >> 16) & 0xFF;
-  int sign = (value.bits[3] >> 31) & 1;
+  s21_decimal one = {{1, 0, 0, 0}};
+  int scale = s21_get_scale(&temp);
+  int sign = s21_get_sign(&temp);
 
   if (scale == 0) {
     *result = value;
     return 0;
   }
 
-  s21_truncate(value, &temp);
-
-  if (sign && s21_is_not_equal(value, temp)) {
-    s21_decimal one = {{1, 0, 0, 0}};
-    s21_sub(temp, one, &temp);
+  if (sign) {
+    s21_truncate(temp, &temp);
+    if (scale > 0) {
+      s21_sub(&temp, &one, &temp);
+    }
+  } else {
+    s21_truncate(temp, &temp);
   }
 
   *result = temp;
