@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -I.
 TEST_FLAGS = -lcheck -lm -lpthread
 
 # Исходные файлы для разных операций
