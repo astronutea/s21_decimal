@@ -2,6 +2,7 @@
 #define S21_DECIMAL_H
 
 #include <stdio.h>
+#include <stdint.h>
 
 typedef struct {
   int bits[4];
@@ -18,6 +19,8 @@ int s21_mul10(s21_decimal *num);
 int s21_normalize(s21_decimal *num1, s21_decimal *num2);
 int s21_div_mod(s21_decimal dividend, s21_decimal divisor,
                 s21_decimal *quotient, s21_decimal *remainder);
+int s21_div10(s21_decimal *value);
+int s21_is_zero(s21_decimal value);
 
 int s21_add(s21_decimal *num1, s21_decimal *num2, s21_decimal *result);
 int is_half_or_more(s21_decimal *frac);
@@ -27,6 +30,7 @@ int s21_bank_round(s21_decimal *num1, s21_decimal *num2, s21_decimal *result,
 int s21_div(s21_decimal num1, s21_decimal num2, s21_decimal *result);
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_mul(s21_decimal num1, s21_decimal num2, s21_decimal *result);
+int s21_sub(s21_decimal *num1, s21_decimal *num2, s21_decimal *result);
 
 int s21_is_equal(s21_decimal value1, s21_decimal value2);
 int s21_is_greater_or_equal(s21_decimal value_1, s21_decimal value_2);
