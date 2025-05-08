@@ -1,12 +1,26 @@
 #ifndef S21_DECIMAL_H
 #define S21_DECIMAL_H
 
+// #include <limits.h>
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct {
   int bits[4];
 } s21_decimal;
+#define OK 0
+#define ERROR_CONVERT 1
+#define INT_MAX 2147483647
+#define INT_MIN -2147483647
+
+int s21_set_bit(s21_decimal *num, int bit_index, int bit_value);
+int s21_from_int_to_decimal(int src, s21_decimal *dst);
+int s21_from_decimal_to_float(s21_decimal src, float *dst);
+int s21_from_decimal_to_int(s21_decimal src, int *dst);
+int s21_from_float_to_decimal(float src, s21_decimal *dst);
 
 int s21_get_scale(s21_decimal *num);
 int s21_get_sign(s21_decimal *num);
