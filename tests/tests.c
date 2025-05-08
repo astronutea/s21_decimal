@@ -6,6 +6,7 @@
 Suite *arithmetic_suite(void);
 Suite *other_suite(void);
 Suite *comparsion_suite(void);
+Suite *conversion_suite(void);
 
 int main(void) {
   int number_failed = 0;
@@ -28,6 +29,13 @@ int main(void) {
 
   // Запуск тестов сравнения
   s = comparsion_suite();
+  sr = srunner_create(s);
+  srunner_run_all(sr, CK_NORMAL);
+  number_failed += srunner_ntests_failed(sr);
+  srunner_free(sr);
+
+  // Запуск тестов конверсии
+  s = conversion_suite();
   sr = srunner_create(s);
   srunner_run_all(sr, CK_NORMAL);
   number_failed += srunner_ntests_failed(sr);
