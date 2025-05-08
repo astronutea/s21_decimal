@@ -70,3 +70,12 @@ int s21_div_mod(s21_decimal dividend, s21_decimal divisor, s21_decimal *quotient
     return 0;
 }
 
+int s21_is_zero(s21_decimal value) {
+    int status = 0;
+
+    if ((value.bits[0] || value.bits[1] || value.bits[2]) == 0)
+        status = 1;
+  
+    return status;
+  
+}
