@@ -8,13 +8,15 @@ OTHER_SRC = other/s21_floor.c other/s21_negate.c other/s21_round.c other/s21_tru
 COMPARSION_SRC = comparsionOps/s21_is_equal.c comparsionOps/s21_is_greater.c comparsionOps/s21_is_greater_or_equal.c comparsionOps/s21_is_less.c comparsionOps/s21_is_less_or_equal.c comparsionOps/s21_is_not_equal.c
 BIT_SRC = bitOps/s21_get_bit.c bitOps/s21_get_scale.c bitOps/s21_get_sign.c bitOps/s21_null_decimal.c bitOps/s21_set_scale.c bitOps/s21_set_sign.c
 SUPPORT_SRC = arithmeticOps/support_func.c
+CONVERSION_SRC = converseOps/s21_from_decimal_to_float.c converseOps/s21_from_decimal_to_int.c converseOps/s21_from_float_to_decimal.c converseOps/s21_from_int_to_decimal.c
 
 ARITHMETIC_TEST = tests/arithmetic_test.c
 OTHER_TEST = tests/other_test.c
 COMPARSION_TEST = tests/comparsion_test.c
-ALL_TESTS = tests/test.c
+CONVERSION_TEST = tests/conversion_test.c
+ALL_TESTS = tests/tests.c
 
-COMMON_SRC = $(ARITHMETIC_SRC) $(OTHER_SRC) $(COMPARSION_SRC) $(BIT_SRC) $(SUPPORT_SRC)
+COMMON_SRC = $(ARITHMETIC_SRC) $(OTHER_SRC) $(COMPARSION_SRC) $(BIT_SRC) $(SUPPORT_SRC) $(CONVERSION_SRC)
 
 all: test_all
 
@@ -38,12 +40,17 @@ test_comparsion: $(LIB)
 	./test_comparsion || true
 	rm -f *.o *.a test_comparsion
 
+test_conversion: $(LIB)
+	$(CC) $(CFLAGS) $(CONVERSION_TEST) $(LIB) -o test_conversion $(TEST_FLAGS)
+	./test_conversion || true
+	rm -f *.o *.a test_conversion
+
 test_all: $(LIB)
 	$(CC) $(CFLAGS) $(ALL_TESTS) $(LIB) -o test_all $(TEST_FLAGS)
 	./test_all || true
 	rm -f *.o *.a test_all
 
 clean:
-	rm -f *.o *.a test_arithmetic test_other test_comparsion test_all
+	rm -f *.o *.a test_arithmetic test_other test_comparsion test_conversion test_all
 
-.PHONY: all test_arithmetic test_other test_comparsion test_all clean
+.PHONY: all test_arithmetic test_other test_comparsion test_conversion test_all clean
