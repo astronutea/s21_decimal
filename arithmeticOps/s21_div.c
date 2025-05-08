@@ -18,7 +18,6 @@ int s21_div(s21_decimal num1, s21_decimal num2, s21_decimal *result) {
     int result_scale = scale1 - scale2;
 
     int added_scale = 0;
-    s21_decimal ten = {{10, 0, 0, 0}};
     s21_decimal temp_num1 = num1;
 
     s21_decimal quotient = {0}, remainder = {0};
@@ -36,7 +35,7 @@ int s21_div(s21_decimal num1, s21_decimal num2, s21_decimal *result) {
 
     s21_div_mod(temp_num1, num2, &quotient, &remainder);
 
-    if (quotient.bits[2] >= 0xFFFFFFFF) {
+    if ((unsigned int)quotient.bits[2] >= 0xFFFFFFFF) {
         status = 1;
     } else {
         *result = quotient;
