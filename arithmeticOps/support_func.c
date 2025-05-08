@@ -32,6 +32,22 @@ int s21_normalize(s21_decimal *num1, s21_decimal *num2) {
   return result;
 }
 
+int s21_set_bit(s21_decimal *num, int bit_index, int bit_value) {
+  if (!num || bit_index < 0 || bit_index > 95) {
+    return 0;
+  }
+  int word_index = bit_index / 32;
+  unsigned int mask = 1u << (bit_index % 32);
+
+  if (bit_value) {
+    num->bits[word_index] |= mask;
+  } else {
+    num->bits[word_index] &= ~mask;
+  }
+
+  return 1;
+}
+
 int s21_div_mod(s21_decimal dividend, s21_decimal divisor,
                 s21_decimal *quotient, s21_decimal *remainder) {
   s21_null_decimal(quotient);
