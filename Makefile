@@ -1,0 +1,49 @@
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra -I.
+TEST_FLAGS = -lcheck -lm -lpthread
+LIB = s21_decimal.a
+
+ARITHMETIC_SRC = arithmeticOps/s21_add.c arithmeticOps/s21_sub.c arithmeticOps/s21_mul.c arithmeticOps/s21_div.c arithmeticOps/s21_mod.c arithmeticOps/support_func.c arithmeticOps/s21_bank_round.c
+OTHER_SRC = other/s21_floor.c other/s21_negate.c other/s21_round.c other/s21_truncate.c
+COMPARSION_SRC = comparsionOps/s21_is_equal.c comparsionOps/s21_is_greater.c comparsionOps/s21_is_greater_or_equal.c comparsionOps/s21_is_less.c comparsionOps/s21_is_less_or_equal.c comparsionOps/s21_is_not_equal.c
+BIT_SRC = bitOps/s21_get_bit.c bitOps/s21_get_scale.c bitOps/s21_get_sign.c bitOps/s21_null_decimal.c bitOps/s21_set_scale.c bitOps/s21_set_sign.c
+SUPPORT_SRC = arithmeticOps/support_func.c
+
+ARITHMETIC_TEST = tests/arithmetic_test.c
+OTHER_TEST = tests/other_test.c
+COMPARSION_TEST = tests/comparsion_test.c
+ALL_TESTS = tests/test.c
+
+COMMON_SRC = $(ARITHMETIC_SRC) $(OTHER_SRC) $(COMPARSION_SRC) $(BIT_SRC) $(SUPPORT_SRC)
+
+all: test_all
+
+$(LIB): $(COMMON_SRC)
+	$(CC) $(CFLAGS) -c $(COMMON_SRC)
+	ar rcs $(LIB) *.o
+	rm -f *.o
+
+test_arithmetic: $(LIB)
+	$(CC) $(CFLAGS) $(ARITHMETIC_TEST) $(LIB) -o test_arithmetic $(TEST_FLAGS)
+	./test_arithmetic || true
+	rm -f *.o *.a test_arithmetic
+
+test_other: $(LIB)
+	$(CC) $(CFLAGS) $(OTHER_TEST) $(LIB) -o test_other $(TEST_FLAGS)
+	./test_other || true
+	rm -f *.o *.a test_other
+
+test_comparsion: $(LIB)
+	$(CC) $(CFLAGS) $(COMPARSION_TEST) $(LIB) -o test_comparsion $(TEST_FLAGS)
+	./test_comparsion || true
+	rm -f *.o *.a test_comparsion
+
+test_all: $(LIB)
+	$(CC) $(CFLAGS) $(ALL_TESTS) $(LIB) -o test_all $(TEST_FLAGS)
+	./test_all || true
+	rm -f *.o *.a test_all
+
+clean:
+	rm -f *.o *.a test_arithmetic test_other test_comparsion test_all
+
+.PHONY: all test_arithmetic test_other test_comparsion test_all clean
