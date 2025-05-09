@@ -69,11 +69,11 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
 
         for (int bit = 0; bit < 96; bit++) {
             int bit_value = (integer_value >> bit) & 1;
-            set_bit(dst, bit, bit_value);
+            s21_set_bit(dst, bit, bit_value);
         }
 
-        set_scale(dst, scale);
-        set_sign(dst, sign);
+        s21_set_scale(dst, scale);
+        s21_set_sign(dst, sign);
     }
     return f;
 }

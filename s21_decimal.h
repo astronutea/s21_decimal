@@ -16,7 +16,6 @@ typedef struct {
 #define INT_MAX 2147483647
 #define INT_MIN -2147483647
 
-int s21_set_bit(s21_decimal *num, int bit_index, int bit_value);
 int s21_from_int_to_decimal(int src, s21_decimal *dst);
 int s21_from_decimal_to_float(s21_decimal src, float *dst);
 int s21_from_decimal_to_int(s21_decimal src, int *dst);
@@ -28,6 +27,7 @@ void s21_set_scale(s21_decimal *num, int scale);
 void s21_set_sign(s21_decimal *num, int sign);
 void s21_null_decimal(s21_decimal *num);
 int s21_get_bit(s21_decimal *num, int index);
+int s21_set_bit(s21_decimal *num, int bit_index, int bit_value);
 
 int s21_mul10(s21_decimal *num);
 int s21_normalize(s21_decimal *num1, s21_decimal *num2);
