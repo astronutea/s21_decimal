@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -I.
-TEST_FLAGS = -lcheck -lm -lpthread -lsubunit
+TEST_FLAGS = -lcheck -lm -lpthread
 LIB = s21_decimal.a
 
 ARITHMETIC_SRC = arithmeticOps/s21_add.c arithmeticOps/s21_sub.c arithmeticOps/s21_mul.c arithmeticOps/s21_div.c arithmeticOps/s21_mod.c arithmeticOps/support_func.c arithmeticOps/s21_bank_round.c
