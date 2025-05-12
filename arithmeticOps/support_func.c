@@ -75,3 +75,60 @@ int s21_is_zero(s21_decimal value) {
 
   return status;
 }
+
+int s21_bit_add(s21_decimal *value_1, s21_decimal *value_2, s21_decimal *res) {
+  int carry = 0;
+  int sign = s21_get_sign(value_1);
+  int status = 0;
+
+  for (int i = 0; i < 96; i++) {
+    int bit1 = s21_get_bit(value_1, i);
+    int bit2 = s21_get_bit(value_2, i);
+    int sum  = bit1 + bit2 + carry;
+    s21_set_bit(res, i, sum & 1);
+    carry = sum >> 1;
+  }
+
+  if (carry) {
+    status = 1 + sign;
+  }
+  return status;
+}
+
+int s21_bit_sub(s21_decimal *value_1, s21_decimal *value_2, s21_decimal *res) {
+  int borrow = 0;
+
+  for (int i = 0; i < 96; i++) {
+    int bit1 = s21_get_bit(value_1, i);
+    int bit2 = s21_get_bit(value_2, i);
+
+    int sub = bit1 - bit2 + borrow;
+    if (sub >= 0) {
+      s21_set_bit(res, i, sub);
+      borrow = 0;
+    } else {
+      s21_set_bit(res, i, sub + 2);
+      borrow = -1;
+    }
+  }
+
+  return 0;
+}
+
+void s21_bit_move_left(s21_decimal *num, int k) {
+  for (int i = 95; i >= k; i--) {
+    s21_set_bit(num, i, s21_get_bit(num, i - k));
+  }
+  for (int i = k - 1; i >= 0; i--)
+    s21_set_bit(num, i, 0);
+}
+
+void print_dec(s21_decimal num) {
+  for (int i = 0; i < 128; i++) {
+    int bit1 = s21_get_bit(&num, i);
+    printf("%d", bit1);
+    if (i % 32 == 31)
+      printf(".");
+  }
+  printf("\n");
+}

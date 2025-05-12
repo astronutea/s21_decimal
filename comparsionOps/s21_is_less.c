@@ -18,9 +18,9 @@ int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
 
             if (bit1 != bit2) {
                 if (sign1 == 0) {
-                    result = bit1 > bit2;
-                } else {
                     result = bit1 < bit2;
+                } else {
+                    result = bit1 > bit2;
                 }
                 break;
             }
