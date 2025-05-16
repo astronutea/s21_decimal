@@ -1,10 +1,6 @@
 #include "../s21_decimal.h"
 
 int s21_truncate(s21_decimal value, s21_decimal *result) {
-  print_dec(value);
-  printf("%d\n", s21_get_scale(&value));
-  printf("~\n");
-
   if (!result) return 1;
 
   s21_decimal temp = {{1, 0, 0, 0}}, ten = {{10, 0, 0, 0}};
@@ -19,10 +15,5 @@ int s21_truncate(s21_decimal value, s21_decimal *result) {
   }
   s21_set_scale(&value, 0);
   s21_div(value, temp, result);
-
-  print_dec(*result);
-  printf(
-      "========================================================================"
-      "==========================================\n");
   return 0;
 }
