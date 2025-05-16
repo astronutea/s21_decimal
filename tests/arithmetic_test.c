@@ -203,11 +203,11 @@ START_TEST(test_div_1) {
   s21_decimal num1, num2, result;
   s21_null_decimal(&num1);
   s21_null_decimal(&num2);
-  num1.bits[0] = 6;
-  num2.bits[0] = 2;
+  num1.bits[0] = 9;
+  num2.bits[0] = 5;
   int status = s21_div(num1, num2, &result);
   ck_assert_int_eq(status, 0);
-  ck_assert_int_eq(result.bits[0], 3);
+  ck_assert_int_eq(result.bits[0], 1);
 }
 END_TEST
 

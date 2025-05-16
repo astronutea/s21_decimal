@@ -31,6 +31,7 @@ void s21_null_decimal(s21_decimal *num);
 int s21_get_bit(s21_decimal *num, int index);
 int s21_set_bit(s21_decimal *num, int bit_index, int bit_value);
 void s21_bit_move_left(s21_decimal *num, int k);
+int s21_get_last_bit(s21_decimal num);
 
 int s21_mul10(s21_decimal *num);
 int s21_normalize(s21_decimal *num1, s21_decimal *num2);
@@ -47,6 +48,7 @@ int is_exact_half(s21_decimal *frac);
 int s21_bank_round(s21_decimal *num1, s21_decimal *num2, s21_decimal *result,
                    int scale);
 int s21_div(s21_decimal num1, s21_decimal num2, s21_decimal *result);
+int s21_support_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *tmp);
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_mul(s21_decimal num1, s21_decimal num2, s21_decimal *result);
 int s21_sub(s21_decimal *num1, s21_decimal *num2, s21_decimal *result);

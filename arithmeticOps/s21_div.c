@@ -1,53 +1,42 @@
 #include "../s21_decimal.h"
 
-int s21_div(s21_decimal num1, s21_decimal num2, s21_decimal *result) {
-  s21_null_decimal(result);
-
-  if (num2.bits[0] == 0 && num2.bits[1] == 0 && num2.bits[2] == 0) {
-    return 3;
-  }
-  if (num1.bits[0] == 0 && num1.bits[1] == 0 && num1.bits[2] == 0) {
-    s21_null_decimal(result);
-    return 0;
-  }
-
-  int status = 0;
-  int sign = s21_get_sign(&num1) ^ s21_get_sign(&num2);
-  int scale1 = s21_get_scale(&num1);
-  int scale2 = s21_get_scale(&num2);
-
-  s21_set_sign(&num1, 0);
-  s21_set_sign(&num2, 0);
-
-  int result_scale = scale1 - scale2;
-
-  s21_decimal temp_num1 = num1;
-  s21_decimal quotient = {0}, remainder = {0};
-  int i = 95;
-  while (!s21_get_bit(&temp_num1, i)) i--;
-  quotient.bits[i] = 1;
-  while (s21_is_greater(num2, quotient)) {
-    s21_bit_move_left(&quotient, 1);
-    s21_set_bit(&quotient, 0, s21_get_bit(&temp_num1, i - 1));
-    i--;
-  }
-  s21_sub(&quotient, &num2, &remainder);
-  quotient = remainder;
-  while (i > 0) {
-    s21_bit_move_left(&quotient, 1);
-    s21_set_bit(&quotient, 0, s21_get_bit(&temp_num1, i));
-    if (s21_is_greater_or_equal(quotient, num2)) {
-      s21_sub(&quotient, &num2, &remainder);
-      s21_bit_move_left(result, 1);
-      s21_set_bit(result, 0, 1);
-      quotient = remainder;
-    } else {
-      s21_bit_move_left(result, 1);
-      s21_set_bit(result, 0, 0);
-    }
-    i--;
+int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+  result->bits[0] = result->bits[1] = result->bits[2] = result->bits[3] = 0;
+  int res = 1;
+  int sign = 0;
+  int sign1 = s21_get_sign(&value_1);
+  int sign2 = s21_get_sign(&value_2);
+  if (sign1 != sign2) sign = 1;
+  s21_set_sign(&value_1, 0);
+  s21_set_sign(&value_2, 0);
+  if (!value_2.bits[0] && !value_2.bits[1] && !value_2.bits[2]) {
+    res = 3;
+  } else {
+    s21_decimal tmp = {0};
+    s21_set_scale(&value_1, 0);
+    s21_set_scale(&value_2, 0);
+    s21_support_div(value_1, value_2, result, &tmp);
+    res = 0;
   }
   s21_set_sign(result, sign);
-  s21_set_scale(result, result_scale);
-  return status;
+  return res;
+}
+
+int s21_support_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *tmp) {
+  int res = 0;
+  for (int i = s21_get_last_bit(value_1); i >= 0; i--) {
+    if (s21_get_bit(&value_1, i)) s21_set_bit(tmp, 0, 1);
+    if (s21_is_greater_or_equal(*tmp, value_2)) {
+      s21_sub(tmp, &value_2, tmp);
+      if (i != 0) s21_bit_move_left(tmp, 1);
+      if (s21_get_bit(&value_1, i - 1)) s21_set_bit(tmp, 0, 1);
+      s21_bit_move_left(result, 1);
+      s21_set_bit(result, 0, 1);
+    } else {
+      s21_bit_move_left(result, 1);
+      if (i != 0) s21_bit_move_left(tmp, 1);
+      if ((i - 1) >= 0 && s21_get_bit(&value_1, i - 1)) s21_set_bit(tmp, 0, 1);
+    }
+  }
+  return res;
 }
