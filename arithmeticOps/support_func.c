@@ -123,6 +123,13 @@ void s21_bit_move_left(s21_decimal *num, int k) {
     s21_set_bit(num, i, 0);
 }
 
+int s21_get_last_bit(s21_decimal num) {
+  int bitLast = 95;
+  for (; (bitLast >= 0) && (!s21_get_bit(&num, bitLast));)
+    bitLast -= 1;
+  return bitLast;
+}
+
 void print_dec(s21_decimal num) {
   for (int i = 0; i < 128; i++) {
     int bit1 = s21_get_bit(&num, i);
