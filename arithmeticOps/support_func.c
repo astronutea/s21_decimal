@@ -3,12 +3,14 @@
 int s21_mul10(s21_decimal *num) {
   unsigned long long carry = 0;
   int status = 0;
-  if (num->bits[2] >= 0x19999999) status = 1;
+
   for (int i = 0; i < 3; i++) {
     unsigned long long temp = (unsigned long long)num->bits[i] * 10 + carry;
     num->bits[i] = (int)temp;
     carry = temp >> 32;
   }
+
+  if (carry) status = 1;
   return status;
 }
 
@@ -17,13 +19,13 @@ int s21_normalize(s21_decimal *num1, s21_decimal *num2) {
   int scale2 = s21_get_scale(num2);
   int result = 0;
 
-  while (scale1 < scale2) {
-    if (!s21_mul10(num1)) break;
+  while (scale1 < scale2 && scale1 < 28) {
+    if (s21_mul10(num1)) { result = 1; break; }
     scale1++;
   }
 
-  while (scale1 > scale2) {
-    if (!s21_mul10(num2)) break;
+  while (scale1 > scale2 && scale2 < 28) {
+    if (s21_mul10(num2)) { result = 1; break; }
     scale2++;
   }
 

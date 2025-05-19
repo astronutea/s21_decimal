@@ -73,11 +73,13 @@ START_TEST(test_sub_1) {
   s21_decimal num1, num2, result;
   s21_null_decimal(&num1);
   s21_null_decimal(&num2);
-  num1.bits[0] = 5;
-  num2.bits[0] = 3;
+  num1.bits[0] = 12345;
+  num2.bits[0] = 12;
+  s21_set_scale(&num1, 3); s21_set_scale(&num2, 0);
   int status = s21_sub(&num1, &num2, &result);
   ck_assert_int_eq(status, 0);
-  ck_assert_int_eq(result.bits[0], 2);
+  ck_assert_int_eq(result.bits[0], 345);
+  ck_assert_int_eq(s21_get_scale(&result), 3);
 }
 END_TEST
 
