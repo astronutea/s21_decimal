@@ -64,6 +64,76 @@ START_TEST(test_from_decimal_to_float_5) {
 }
 END_TEST
 
+START_TEST(test_from_decimal_to_float_6) {
+  s21_decimal src;
+  s21_null_decimal(&src);
+  src.bits[0] = 0xFFFFFFFF;
+  src.bits[1] = 0xFFFFFFFF;
+  src.bits[2] = 0xFFFFFFFF;
+  s21_set_scale(&src, 28);  // Maximum scale
+  float dst;
+  int status = s21_from_decimal_to_float(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_float_eq(dst, 7.9228162514264337593543950335f);
+}
+END_TEST
+
+START_TEST(test_from_decimal_to_float_7) {
+  s21_decimal src;
+  s21_null_decimal(&src);
+  src.bits[0] = 0xFFFFFFFF;
+  src.bits[1] = 0xFFFFFFFF;
+  src.bits[2] = 0xFFFFFFFF;
+  s21_set_scale(&src, 28);
+  s21_set_sign(&src, 1);  // Negative maximum value
+  float dst;
+  int status = s21_from_decimal_to_float(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_float_eq(dst, -7.9228162514264337593543950335f);
+}
+END_TEST
+
+START_TEST(test_from_decimal_to_float_8) {
+  s21_decimal src;
+  s21_null_decimal(&src);
+  src.bits[0] = 0xFFFFFFFF;
+  src.bits[1] = 0xFFFFFFFF;
+  src.bits[2] = 0xFFFFFFFF;
+  s21_set_scale(&src, 27);  // Almost maximum scale
+  float dst;
+  int status = s21_from_decimal_to_float(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_float_eq(dst, 79.228162514264337593543950335f);
+}
+END_TEST
+
+START_TEST(test_from_decimal_to_float_9) {
+  s21_decimal src;
+  s21_null_decimal(&src);
+  src.bits[0] = 0xFFFFFFFF;
+  src.bits[1] = 0xFFFFFFFF;
+  src.bits[2] = 0xFFFFFFFF;
+  s21_set_scale(&src, 27);
+  s21_set_sign(&src, 1);  // Negative almost maximum value
+  float dst;
+  int status = s21_from_decimal_to_float(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_float_eq(dst, -79.228162514264337593543950335f);
+}
+END_TEST
+
+START_TEST(test_from_decimal_to_float_10) {
+  s21_decimal src;
+  s21_null_decimal(&src);
+  src.bits[0] = 1;
+  s21_set_scale(&src, 28);  // Minimum positive value
+  float dst;
+  int status = s21_from_decimal_to_float(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_float_eq(dst, 1e-28f);
+}
+END_TEST
+
 // Тесты для s21_from_decimal_to_int
 START_TEST(test_from_decimal_to_int_1) {
   s21_decimal src;
@@ -125,6 +195,44 @@ START_TEST(test_from_decimal_to_int_5) {
 }
 END_TEST
 
+START_TEST(test_from_decimal_to_int_6) {
+  s21_decimal src;
+  s21_null_decimal(&src);
+  src.bits[0] = 0xFFFFFFFF;
+  src.bits[1] = 0xFFFFFFFF;
+  src.bits[2] = 0xFFFFFFFF;
+  s21_set_scale(&src, 28);  // Maximum scale
+  int dst;
+  int status = s21_from_decimal_to_int(src, &dst);
+  ck_assert_int_eq(status, 1);  // ERROR_CONVERT - value too large
+}
+END_TEST
+
+START_TEST(test_from_decimal_to_int_7) {
+  s21_decimal src;
+  s21_null_decimal(&src);
+  src.bits[0] = 0xFFFFFFFF;
+  src.bits[1] = 0xFFFFFFFF;
+  src.bits[2] = 0xFFFFFFFF;
+  s21_set_scale(&src, 27);  // Almost maximum scale
+  int dst;
+  int status = s21_from_decimal_to_int(src, &dst);
+  ck_assert_int_eq(status, 1);  // ERROR_CONVERT - value too large
+}
+END_TEST
+
+START_TEST(test_from_decimal_to_int_8) {
+  s21_decimal src;
+  s21_null_decimal(&src);
+  src.bits[0] = 1;
+  s21_set_scale(&src, 28);  // Minimum positive value
+  int dst;
+  int status = s21_from_decimal_to_int(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(dst, 0);
+}
+END_TEST
+
 // Тесты для s21_from_float_to_decimal
 START_TEST(test_from_float_to_decimal_1) {
   float src = 12.345f;
@@ -171,6 +279,78 @@ START_TEST(test_from_float_to_decimal_5) {
   s21_decimal *dst = NULL;
   int status = s21_from_float_to_decimal(src, dst);
   ck_assert_int_eq(status, 1);  // ERROR_CONVERT
+}
+END_TEST
+
+START_TEST(test_from_float_to_decimal_6) {
+  float src = 1e-28f;  // Minimum positive value
+  s21_decimal dst;
+  int status = s21_from_float_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_get_scale(&dst), 28);
+  ck_assert_int_eq(s21_get_sign(&dst), 0);
+}
+END_TEST
+
+START_TEST(test_from_float_to_decimal_7) {
+  float src = -1e-28f;  // Minimum negative value
+  s21_decimal dst;
+  int status = s21_from_float_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_get_scale(&dst), 28);
+  ck_assert_int_eq(s21_get_sign(&dst), 1);
+}
+END_TEST
+
+START_TEST(test_from_float_to_decimal_8) {
+  float src = INFINITY;  // Infinity
+  s21_decimal dst;
+  int status = s21_from_float_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 1);  // ERROR_CONVERT
+}
+END_TEST
+
+START_TEST(test_from_float_to_decimal_9) {
+  float src = NAN;  // Not a number
+  s21_decimal dst;
+  int status = s21_from_float_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 1);  // ERROR_CONVERT
+}
+END_TEST
+
+START_TEST(test_from_float_to_decimal_10) {
+  float src = 1e-27f;  // Almost minimum positive value
+  s21_decimal dst;
+  int status = s21_from_float_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_get_scale(&dst), 27);
+  ck_assert_int_eq(s21_get_sign(&dst), 0);
+}
+END_TEST
+
+START_TEST(test_from_float_to_decimal_11) {
+  float src = -1e-27f;  // Almost minimum negative value
+  s21_decimal dst;
+  int status = s21_from_float_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_get_scale(&dst), 27);
+  ck_assert_int_eq(s21_get_sign(&dst), 1);
+}
+END_TEST
+
+START_TEST(test_from_float_to_decimal_12) {
+  float src = 1e+28f;  // Almost maximum positive value
+  s21_decimal dst;
+  int status = s21_from_float_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 1);  // ERROR_CONVERT - value too large
+}
+END_TEST
+
+START_TEST(test_from_float_to_decimal_13) {
+  float src = -1e+28f;  // Almost maximum negative value
+  s21_decimal dst;
+  int status = s21_from_float_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 1);  // ERROR_CONVERT - value too large
 }
 END_TEST
 
@@ -223,6 +403,36 @@ START_TEST(test_from_int_to_decimal_5) {
 }
 END_TEST
 
+START_TEST(test_from_int_to_decimal_6) {
+  int src = INT_MIN;  // Minimum int value
+  s21_decimal dst;
+  int status = s21_from_int_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(dst.bits[0], 2147483648);
+  ck_assert_int_eq(s21_get_sign(&dst), 1);
+}
+END_TEST
+
+START_TEST(test_from_int_to_decimal_7) {
+  int src = 0x7FFFFFFF;  // Maximum positive int value
+  s21_decimal dst;
+  int status = s21_from_int_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(dst.bits[0], 0x7FFFFFFF);
+  ck_assert_int_eq(s21_get_sign(&dst), 0);
+}
+END_TEST
+
+START_TEST(test_from_int_to_decimal_8) {
+  int src = 0x80000000;  // Maximum negative int value
+  s21_decimal dst;
+  int status = s21_from_int_to_decimal(src, &dst);
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(dst.bits[0], 0x80000000);
+  ck_assert_int_eq(s21_get_sign(&dst), 1);
+}
+END_TEST
+
 Suite *conversion_suite(void) {
   Suite *s;
   TCase *tc_core;
@@ -235,21 +445,40 @@ Suite *conversion_suite(void) {
   tcase_add_test(tc_core, test_from_decimal_to_float_3);
   tcase_add_test(tc_core, test_from_decimal_to_float_4);
   tcase_add_test(tc_core, test_from_decimal_to_float_5);
+  tcase_add_test(tc_core, test_from_decimal_to_float_6);
+  tcase_add_test(tc_core, test_from_decimal_to_float_7);
+  tcase_add_test(tc_core, test_from_decimal_to_float_8);
+  tcase_add_test(tc_core, test_from_decimal_to_float_9);
+  tcase_add_test(tc_core, test_from_decimal_to_float_10);
   tcase_add_test(tc_core, test_from_decimal_to_int_1);
   tcase_add_test(tc_core, test_from_decimal_to_int_2);
   tcase_add_test(tc_core, test_from_decimal_to_int_3);
   tcase_add_test(tc_core, test_from_decimal_to_int_4);
   tcase_add_test(tc_core, test_from_decimal_to_int_5);
+  tcase_add_test(tc_core, test_from_decimal_to_int_6);
+  tcase_add_test(tc_core, test_from_decimal_to_int_7);
+  tcase_add_test(tc_core, test_from_decimal_to_int_8);
   tcase_add_test(tc_core, test_from_float_to_decimal_1);
   tcase_add_test(tc_core, test_from_float_to_decimal_2);
   tcase_add_test(tc_core, test_from_float_to_decimal_3);
   tcase_add_test(tc_core, test_from_float_to_decimal_4);
   tcase_add_test(tc_core, test_from_float_to_decimal_5);
+  tcase_add_test(tc_core, test_from_float_to_decimal_6);
+  tcase_add_test(tc_core, test_from_float_to_decimal_7);
+  tcase_add_test(tc_core, test_from_float_to_decimal_8);
+  tcase_add_test(tc_core, test_from_float_to_decimal_9);
+  tcase_add_test(tc_core, test_from_float_to_decimal_10);
+  tcase_add_test(tc_core, test_from_float_to_decimal_11);
+  tcase_add_test(tc_core, test_from_float_to_decimal_12);
+  tcase_add_test(tc_core, test_from_float_to_decimal_13);
   tcase_add_test(tc_core, test_from_int_to_decimal_1);
   tcase_add_test(tc_core, test_from_int_to_decimal_2);
   tcase_add_test(tc_core, test_from_int_to_decimal_3);
   tcase_add_test(tc_core, test_from_int_to_decimal_4);
   tcase_add_test(tc_core, test_from_int_to_decimal_5);
+  tcase_add_test(tc_core, test_from_int_to_decimal_6);
+  tcase_add_test(tc_core, test_from_int_to_decimal_7);
+  tcase_add_test(tc_core, test_from_int_to_decimal_8);
   suite_add_tcase(s, tc_core);
 
   return s;
