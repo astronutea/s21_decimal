@@ -12,19 +12,31 @@ int s21_mul(s21_decimal num1, s21_decimal num2, s21_decimal *result) {
     int scale2 = s21_get_scale(&num2);
     int result_scale = scale1 + scale2;
     int flag = 0;
+    int overflow = 0;
+    if (result_scale > 28) {
+        return 1;
+    }
+    int last_bit1 = s21_get_last_bit(num1);
+    int last_bit2 = s21_get_last_bit(num2);
+    if (last_bit1 + last_bit2 >= 96) {
+        return 1;
+    }
 
-    for (int i = 0; i < 96; i++) {
+    for (int i = 0; i < 96 && !overflow; i++) {
         if (s21_get_bit(&num2, i)) {
             shifted = num1;
             s21_bit_move_left(&shifted, i);
             if (!flag) {
-                s21_add(&temp1, &shifted, &temp2);
+                overflow = s21_bit_add(&temp1, &shifted, &temp2);
                 flag = 1;
             } else {
-                s21_add(&temp2, &shifted, &temp1);
+                overflow = s21_bit_add(&temp2, &shifted, &temp1);
                 flag = 0;
             }
         }
+    }
+    if (overflow) {
+        return 1;
     }
     if (flag)
         *result = temp2;

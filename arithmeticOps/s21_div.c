@@ -2,7 +2,7 @@
 
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   result->bits[0] = result->bits[1] = result->bits[2] = result->bits[3] = 0;
-  int res = 1;
+  int res = 0;
   int sign = 0;
   int sign1 = s21_get_sign(&value_1);
   int sign2 = s21_get_sign(&value_2);
