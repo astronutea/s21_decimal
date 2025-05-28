@@ -13,10 +13,15 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     res = 3;
   } else {
     s21_decimal tmp = {0};
+    int scale1 = s21_get_scale(&value_1);
+    int scale2 = s21_get_scale(&value_2);
     s21_set_scale(&value_1, 0);
     s21_set_scale(&value_2, 0);
-    s21_support_div(value_1, value_2, result, &tmp);
-    res = 0;
+    res = s21_support_div(value_1, value_2, result, &tmp);
+    int result_scale = scale1 - scale2;
+    if (result_scale < 0) result_scale = 0;
+    if (result_scale > 28) result_scale = 28;
+    s21_set_scale(result, result_scale);
   }
   s21_set_sign(result, sign);
   return res;
@@ -24,19 +29,37 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
 int s21_support_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *tmp) {
   int res = 0;
-  for (int i = s21_get_last_bit(value_1); i >= 0; i--) {
-    if (s21_get_bit(&value_1, i)) s21_set_bit(tmp, 0, 1);
+  s21_null_decimal(result);
+  s21_null_decimal(tmp);
+  
+  if (s21_is_less(value_1, value_2)) {
+    return res;
+  }
+  
+  if (s21_is_equal(value_1, value_2)) {
+    result->bits[0] = 1;
+    return res;
+  }
+  
+  int dividend_bits = s21_get_last_bit(value_1);
+  
+  for (int i = dividend_bits; i >= 0; i--) {
+    s21_bit_move_left(tmp, 1);
+    
+    if (s21_get_bit(&value_1, i)) {
+      s21_set_bit(tmp, 0, 1);
+    }
+    
+    s21_bit_move_left(result, 1);
+    
     if (s21_is_greater_or_equal(*tmp, value_2)) {
-      s21_sub(tmp, &value_2, tmp);
-      if (i != 0) s21_bit_move_left(tmp, 1);
-      if (s21_get_bit(&value_1, i - 1)) s21_set_bit(tmp, 0, 1);
-      s21_bit_move_left(result, 1);
+      s21_decimal temp_remainder = {0};
+      s21_sub(tmp, &value_2, &temp_remainder);
+      *tmp = temp_remainder;
+      
       s21_set_bit(result, 0, 1);
-    } else {
-      s21_bit_move_left(result, 1);
-      if (i != 0) s21_bit_move_left(tmp, 1);
-      if ((i - 1) >= 0 && s21_get_bit(&value_1, i - 1)) s21_set_bit(tmp, 0, 1);
     }
   }
+  
   return res;
 }
