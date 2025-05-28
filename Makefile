@@ -31,28 +31,28 @@ $(LIB): $(COMMON_SRC)
 test_arithmetic: $(LIB)
 	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(ARITHMETIC_TEST) $(LIB) -o test_arithmetic $(TEST_FLAGS)
 	./test_arithmetic || true
-	rm -f *.o *.a *.gcda *.gcno test_arithmetic
+	rm -f *.o *.a  test_arithmetic
 
 test_other: $(LIB)
 	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(OTHER_TEST) $(LIB) -o test_other $(TEST_FLAGS)
 	./test_other || true
-	rm -f *.o *.a *.gcda *.gcno test_other
+	rm -f *.o *.a  test_other
 
 
 test_comparsion: $(LIB)
 	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(COMPARSION_TEST) $(LIB) -o test_comparsion $(TEST_FLAGS)
 	./test_comparsion || true
-	rm -f *.o *.a *.gcda *.gcno test_comparsion
+	rm -f *.o *.a  test_comparsion
 
 test_conversion: $(LIB)
 	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(CONVERSION_TEST) $(LIB) -o test_conversion $(TEST_FLAGS)
 	./test_conversion || true
-	rm -f *.o *.a  *.gcda *.gcnotest_conversion
+	rm -f *.o *.a  test_conversion
 
 test_all: $(LIB)
 	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(ALL_TESTS) $(LIB) -o test_all $(TEST_FLAGS)
 	./test_all || true
-	rm -f *.o *.a *.gcda *.gcno test_all
+	rm -f *.o *.a  test_all
 
 gcov_report: test_all
 	lcov --no-checksum --directory . --capture --output-file coverage.info
