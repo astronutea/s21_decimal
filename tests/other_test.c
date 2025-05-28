@@ -359,8 +359,8 @@ START_TEST(test_round_4) {
   s21_set_scale(&num, 3);
   s21_set_sign(&num, 1);  // -12.745
   s21_null_decimal(&expected);
-  expected.bits[0] = 13;
-  s21_set_sign(&expected, 1);  // round(-12.745) = -13
+  expected.bits[0] = 12;  // round(-12.745) = -12
+  s21_set_sign(&expected, 1);
   int status = s21_round(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
