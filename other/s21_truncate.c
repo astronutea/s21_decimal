@@ -1,31 +1,19 @@
 #include "../s21_decimal.h"
 
 int s21_truncate(s21_decimal value, s21_decimal *result) {
-    if (result == NULL) {
-        return 1;  
-    }
+  if (!result) return 1;
 
-    s21_decimal temp = value;
-    int scale = (value.bits[3] >> 16) & 0xFF;  
+  s21_decimal temp = {{1, 0, 0, 0}}, ten = {{10, 0, 0, 0}};
 
-    
-    if (scale == 0) {
-        *result = value;
-        return 0;
-    }
-
-    
-    int sign = (value.bits[3] >> 31) & 1;
-    temp.bits[3] = 0;  
-
-    
-    for (int i = 0; i < scale; i++) {
-        s21_div(temp, (s21_decimal){{10, 0, 0, 0}}, &temp);
-    }
-
-    
-    temp.bits[3] |= (sign << 31);
-    *result = temp;
-
+  int scale = s21_get_scale(&value);
+  if (scale == 0) {
+    *result = value;
     return 0;
+  }
+  for (int i = 0; i < scale; i++) {
+    s21_mul(temp, ten, &temp);
+  }
+  s21_set_scale(&value, 0);
+  s21_div(value, temp, result);
+  return 0;
 }

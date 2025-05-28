@@ -1,7 +1,10 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -I.
+GCOV_FLAGS = -fprofile-arcs -ftest-coverage
 TEST_FLAGS = -lcheck -lm -lpthread
 LIB = s21_decimal.a
+
+PATH := /Users/angellat/goinfre/.brew/bin:$(PATH)
 
 ARITHMETIC_SRC = arithmeticOps/s21_add.c arithmeticOps/s21_sub.c arithmeticOps/s21_mul.c arithmeticOps/s21_div.c arithmeticOps/s21_mod.c arithmeticOps/support_func.c arithmeticOps/s21_bank_round.c
 OTHER_SRC = other/s21_floor.c other/s21_negate.c other/s21_round.c other/s21_truncate.c
@@ -26,31 +29,39 @@ $(LIB): $(COMMON_SRC)
 	rm -f *.o
 
 test_arithmetic: $(LIB)
-	$(CC) $(CFLAGS) $(ARITHMETIC_TEST) $(LIB) -o test_arithmetic $(TEST_FLAGS)
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(ARITHMETIC_TEST) $(LIB) -o test_arithmetic $(TEST_FLAGS)
 	./test_arithmetic || true
 	rm -f *.o *.a test_arithmetic
 
 test_other: $(LIB)
-	$(CC) $(CFLAGS) $(OTHER_TEST) $(LIB) -o test_other $(TEST_FLAGS)
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(OTHER_TEST) $(LIB) -o test_other $(TEST_FLAGS)
 	./test_other || true
 	rm -f *.o *.a test_other
 
 test_comparsion: $(LIB)
-	$(CC) $(CFLAGS) $(COMPARSION_TEST) $(LIB) -o test_comparsion $(TEST_FLAGS)
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(COMPARSION_TEST) $(LIB) -o test_comparsion $(TEST_FLAGS)
 	./test_comparsion || true
 	rm -f *.o *.a test_comparsion
 
 test_conversion: $(LIB)
-	$(CC) $(CFLAGS) $(CONVERSION_TEST) $(LIB) -o test_conversion $(TEST_FLAGS)
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(CONVERSION_TEST) $(LIB) -o test_conversion $(TEST_FLAGS)
 	./test_conversion || true
 	rm -f *.o *.a test_conversion
 
 test_all: $(LIB)
-	$(CC) $(CFLAGS) $(ALL_TESTS) $(LIB) -o test_all $(TEST_FLAGS)
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(ALL_TESTS) $(LIB) -o test_all $(TEST_FLAGS)
 	./test_all || true
 	rm -f *.o *.a test_all
 
-clean:
-	rm -f *.o *.a test_arithmetic test_other test_comparsion test_conversion test_all
+gcov_report: test_all
+	lcov --no-checksum --directory . --capture --output-file coverage.info
+	lcov --remove coverage.info '/usr/*' --output-file coverage.info || true
+	genhtml coverage.info --output-directory gcov_report
+	open gcov_report/index.html
 
-.PHONY: all test_arithmetic test_other test_comparsion test_conversion test_all clean
+clean:
+	rm -f *.o *.a *.gcno *.gcda *.info
+	rm -f test_arithmetic test_other test_comparsion test_conversion test_all
+	rm -rf gcov_report
+
+.PHONY: all test_arithmetic test_other test_comparsion test_conversion test_all clean gcov_report
