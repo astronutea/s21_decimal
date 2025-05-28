@@ -26,6 +26,8 @@ int s21_from_decimal_to_float(s21_decimal src, float *dst);
 int s21_from_decimal_to_int(s21_decimal src, int *dst);
 int s21_from_float_to_decimal(float src, s21_decimal *dst);
 
+void s21_decimal_to_big_decimal(s21_decimal src, s21_big_decimal *dst);
+int s21_get_big_decimal_bit(s21_big_decimal *num, int index);
 int s21_get_scale(s21_decimal *num);
 int s21_get_sign(s21_decimal *num);
 void s21_set_scale(s21_decimal *num, int scale);
