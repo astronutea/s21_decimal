@@ -1,17 +1,23 @@
 #include "../s21_decimal.h"
 
 int s21_from_float_to_decimal(float src, s21_decimal *dst) {
-    if (dst == NULL) return 1;
+    if (dst == NULL) return ERROR_CONVERT;
     int f = OK;
 
     for (int i = 0; i < 4; i++) {
         dst->bits[i] = 0;
     }
+
+    if (isnan(src) || isinf(src)) {
+        return ERROR_CONVERT;
+    }
+
     float abs_src = fabsf(src);
 
-    if (abs_src > 7.922816e28f || (abs_src > 0 && abs_src < 1e-28f)) {
-        f = ERROR_CONVERT;
+    if (abs_src >= 1e+28f || (abs_src > 0 && abs_src < 1e-28f)) {
+        return ERROR_CONVERT;
     }
+
     if (f == OK) {
         int sign = (src < 0) ? 1 : 0;
 
@@ -50,9 +56,18 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
         int power_adjust = exp_value - num_after_decimal;
         int scale = 0;
 
-        __int128 integer_value = 0;
+        s21_big_decimal integer_value = {0};
         for (int i = 0; i < num_digits; i++) {
-            integer_value = integer_value * 10 + (digits[i] - '0');
+            // Умножаем на 10
+            for (int j = 6; j >= 0; j--) {
+                unsigned long long temp = (unsigned long long)integer_value.bits[j] * 10;
+                if (j < 6) {
+                    temp += (unsigned long long)integer_value.bits[j + 1] >> 32;
+                }
+                integer_value.bits[j] = (int)temp;
+            }
+            // Добавляем новую цифру
+            integer_value.bits[0] += (digits[i] - '0');
         }
 
         if (power_adjust < 0) {
@@ -62,14 +77,21 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
             }
         } else {
             for (int i = 0; i < power_adjust; i++) {
-                integer_value *= 10;
+                // Умножаем на 10
+                for (int j = 6; j >= 0; j--) {
+                    unsigned long long temp = (unsigned long long)integer_value.bits[j] * 10;
+                    if (j < 6) {
+                        temp += (unsigned long long)integer_value.bits[j + 1] >> 32;
+                    }
+                    integer_value.bits[j] = (int)temp;
+                }
             }
             scale = 0;
         }
 
-        for (int bit = 0; bit < 96; bit++) {
-            int bit_value = (integer_value >> bit) & 1;
-            s21_set_bit(dst, bit, bit_value);
+        // Копируем первые 3 слова из big_decimal в decimal
+        for (int i = 0; i < 3; i++) {
+            dst->bits[i] = integer_value.bits[i];
         }
 
         s21_set_scale(dst, scale);
