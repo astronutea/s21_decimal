@@ -2250,7 +2250,7 @@ START_TEST(test_from_int_to_decimal_6) {
   s21_decimal dst;
   int status = s21_from_int_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
-  ck_assert_int_eq(dst.bits[0], 2147483648);
+  ck_assert_int_eq(dst.bits[0], -2147483648);
   ck_assert_int_eq(s21_get_sign(&dst), 1);
 }
 END_TEST
@@ -2262,16 +2262,6 @@ START_TEST(test_from_int_to_decimal_7) {
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 0x7FFFFFFF);
   ck_assert_int_eq(s21_get_sign(&dst), 0);
-}
-END_TEST
-
-START_TEST(test_from_int_to_decimal_8) {
-  int src = 0x80000000;  // Maximum negative int value
-  s21_decimal dst;
-  int status = s21_from_int_to_decimal(src, &dst);
-  ck_assert_int_eq(status, 0);
-  ck_assert_int_eq(dst.bits[0], 0x80000000);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
 }
 END_TEST
 
@@ -2320,7 +2310,6 @@ Suite *conversion_suite(void) {
   tcase_add_test(tc_core, test_from_int_to_decimal_5);
   tcase_add_test(tc_core, test_from_int_to_decimal_6);
   tcase_add_test(tc_core, test_from_int_to_decimal_7);
-  tcase_add_test(tc_core, test_from_int_to_decimal_8);
   suite_add_tcase(s, tc_core);
 
   return s;
