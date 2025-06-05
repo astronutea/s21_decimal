@@ -19,7 +19,7 @@ ALL_TESTS = tests/tests.c
 
 COMMON_SRC = $(ARITHMETIC_SRC) $(OTHER_SRC) $(COMPARSION_SRC) $(BIT_SRC) $(SUPPORT_SRC) $(CONVERSION_SRC)
 
-all: clean test $(LIB) gcov_report valgrind_test
+all: clean test $(LIB) gcov_report
 
 $(LIB): $(COMMON_SRC)
 	$(CC) $(CFLAGS) -c $(COMMON_SRC)
