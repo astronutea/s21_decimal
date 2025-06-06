@@ -2846,6 +2846,73 @@ START_TEST(test_truncate_10) {
 }
 END_TEST
 
+START_TEST(test_null_result) {
+    s21_decimal value = {{123, 0, 0, 0}};
+    int ret = s21_truncate(value, NULL);
+    ck_assert_int_eq(1, ret);
+}
+END_TEST
+
+START_TEST(test_zero_scale) {
+    s21_decimal value = {{12345, 0, 0, 0}};
+    s21_decimal result;
+    s21_set_scale(&value, 0);
+    
+    s21_truncate(value, &result);
+    
+    ck_assert(s21_is_equal(value, result));
+}
+END_TEST
+
+START_TEST(test_large_scale) {
+    s21_decimal value = {{123, 0, 0, 0x80000000}}; // -123
+    s21_decimal result;
+    s21_set_scale(&value, 28);
+    
+    s21_truncate(value, &result);
+    
+    ck_assert_int_eq(0, result.bits[0]);
+    ck_assert(s21_get_sign(&result));
+}
+END_TEST
+
+START_TEST(test_positive_truncate) {
+    s21_decimal value = {{1234567, 0, 0, 0}};
+    s21_decimal expected = {{12345, 0, 0, 0}};
+    s21_set_scale(&value, 2);
+    
+    s21_truncate(value, &expected);
+    
+    ck_assert_int_eq(12345, expected.bits[0]);
+    ck_assert_int_eq(0, s21_get_scale(&expected));
+}
+END_TEST
+
+START_TEST(test_negative_truncate) {
+    s21_decimal value = {{987654, 0, 0, 0x80000000}}; // -987654
+    s21_decimal result;
+    s21_set_scale(&value, 3); // -987.654
+    
+    s21_truncate(value, &result);
+    
+    ck_assert_int_eq(987, result.bits[0]);
+    ck_assert(s21_get_sign(&result));
+    ck_assert_int_eq(0, s21_get_scale(&result));
+}
+END_TEST
+
+START_TEST(test_overflow_in_loop) {
+    s21_decimal value = {{1, 0, 0, 0}};
+    s21_decimal result;
+    s21_set_scale(&value, 25); // 10^25
+    
+    s21_truncate(value, &result);
+    
+    ck_assert_int_eq(0, result.bits[0]);
+    ck_assert_int_eq(0, s21_get_sign(&result));
+}
+END_TEST
+
 Suite *other_suite(void) {
   Suite *s;
   TCase *tc_core;
@@ -2893,6 +2960,13 @@ Suite *other_suite(void) {
   tcase_add_test(tc_core, test_truncate_8);
   tcase_add_test(tc_core, test_truncate_9);
   tcase_add_test(tc_core, test_truncate_10);
+  tcase_add_test(tc_core, test_null_result);
+  tcase_add_test(tc_core, test_zero_scale);
+  tcase_add_test(tc_core, test_large_scale);
+  tcase_add_test(tc_core, test_positive_truncate);
+  tcase_add_test(tc_core, test_negative_truncate);
+  tcase_add_test(tc_core, test_overflow_in_loop);
+
   suite_add_tcase(s, tc_core);
 
   return s;
