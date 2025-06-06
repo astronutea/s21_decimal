@@ -55,7 +55,7 @@ int s21_support_div(s21_decimal value_1, s21_decimal value_2,
 
     if (s21_is_greater_or_equal(*tmp, value_2)) {
       s21_decimal temp_remainder = {0};
-      s21_sub(tmp, &value_2, &temp_remainder);
+      s21_sub(*tmp, value_2, &temp_remainder);
       *tmp = temp_remainder;
 
       s21_set_bit(result, 0, 1);

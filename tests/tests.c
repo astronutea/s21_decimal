@@ -12,7 +12,7 @@ START_TEST(test_add_normal) {
   s21_decimal result;
   s21_decimal expected = {{8, 0, 0, 0}};
 
-  int status = s21_add(&num1, &num2, &result);
+  int status = s21_add(num1, num2, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
   ck_assert_int_eq(result.bits[1], expected.bits[1]);
@@ -26,7 +26,7 @@ START_TEST(test_add_overflow) {
   s21_decimal num2 = {{1, 0, 0, 0}};
   s21_decimal result;
 
-  int status = s21_add(&num1, &num2, &result);
+  int status = s21_add(num1, num2, &result);
   ck_assert_int_eq(status, 1);  // Should return overflow error
 }
 END_TEST
@@ -37,7 +37,7 @@ START_TEST(test_add_negative) {
   s21_decimal result;
   s21_decimal expected = {{2, 0, 0, 0x80000000}};  // -2
 
-  int status = s21_add(&num1, &num2, &result);
+  int status = s21_add(num1, num2, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
   ck_assert_int_eq(result.bits[3], expected.bits[3]);
@@ -50,7 +50,7 @@ START_TEST(test_add_negative_overflow) {
   s21_decimal num2 = {{1, 0, 0, 0x80000000}};             // -1
   s21_decimal result;
 
-  int status = s21_add(&num1, &num2, &result);
+  int status = s21_add(num1, num2, &result);
   ck_assert_int_eq(status, 2);  // Should return negative overflow error
 }
 END_TEST
@@ -61,7 +61,7 @@ START_TEST(test_add_zero) {
   s21_decimal result;
   s21_decimal expected = {{5, 0, 0, 0}};
 
-  int status = s21_add(&num1, &num2, &result);
+  int status = s21_add(num1, num2, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
 }
@@ -73,7 +73,7 @@ START_TEST(test_add_with_scale) {
   s21_decimal result;
   s21_decimal expected = {{1686, 0, 0, 0x00020000}};  // 16.86
 
-  int status = s21_add(&num1, &num2, &result);
+  int status = s21_add(num1, num2, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
   ck_assert_int_eq(result.bits[3], expected.bits[3]);
@@ -86,7 +86,7 @@ START_TEST(test_add_large_numbers) {
   s21_decimal result;
   s21_decimal expected = {{0, 0, 0x80000000, 0}};
 
-  int status = s21_add(&num1, &num2, &result);
+  int status = s21_add(num1, num2, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
   ck_assert_int_eq(result.bits[2], expected.bits[2]);
@@ -100,7 +100,7 @@ START_TEST(test_sub_normal) {
   s21_decimal result;
   s21_decimal expected = {{2, 0, 0, 0}};
 
-  int status = s21_sub(&num1, &num2, &result);
+  int status = s21_sub(num1, num2, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
   ck_assert_int_eq(result.bits[3], expected.bits[3]);
@@ -113,7 +113,7 @@ START_TEST(test_sub_negative_result) {
   s21_decimal result;
   s21_decimal expected = {{2, 0, 0, 0x80000000}};  // -2
 
-  int status = s21_sub(&num1, &num2, &result);
+  int status = s21_sub(num1, num2, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
   ck_assert_int_eq(result.bits[3], expected.bits[3]);
@@ -125,7 +125,7 @@ START_TEST(test_sub_overflow) {
   s21_decimal num2 = {{1, 0, 0, 0x80000000}};  // -1
   s21_decimal result;
 
-  int status = s21_sub(&num1, &num2, &result);
+  int status = s21_sub(num1, num2, &result);
   ck_assert_int_eq(status, 1);  // Should return overflow error
 }
 END_TEST
@@ -136,7 +136,7 @@ START_TEST(test_sub_underflow) {
   s21_decimal num2 = {{1, 0, 0, 0}};                      // 1
   s21_decimal result;
 
-  int status = s21_sub(&num1, &num2, &result);
+  int status = s21_sub(num1, num2, &result);
   ck_assert_int_eq(status, 2);  // Should return underflow error
 }
 END_TEST
@@ -147,7 +147,7 @@ START_TEST(test_sub_zero) {
   s21_decimal result;
   s21_decimal expected = {{5, 0, 0, 0}};
 
-  int status = s21_sub(&num1, &num2, &result);
+  int status = s21_sub(num1, num2, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
 }
@@ -159,7 +159,7 @@ START_TEST(test_sub_same_numbers) {
   s21_decimal result;
   s21_decimal expected = {{0, 0, 0, 0}};
 
-  int status = s21_sub(&num1, &num2, &result);
+  int status = s21_sub(num1, num2, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
   ck_assert_int_eq(result.bits[3], expected.bits[3]);
@@ -480,7 +480,7 @@ START_TEST(test_add_max_scale) {
   s21_decimal result;
   s21_decimal expected = {{579, 0, 0, 0x001C0000}};
 
-  int status = s21_add(&num1, &num2, &result);
+  int status = s21_add(num1, num2, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
   ck_assert_int_eq(result.bits[3], expected.bits[3]);

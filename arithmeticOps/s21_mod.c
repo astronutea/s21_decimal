@@ -12,7 +12,7 @@ int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     s21_div(a, b, &div_result);
     s21_set_sign(&div_result, 0);
     s21_mul(div_result, b, &mul_result);
-    s21_sub(&a, &mul_result, result);
+    s21_sub(a, mul_result, result);
     s21_set_sign(result, sign);
     return 0;
   }
