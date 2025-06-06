@@ -55,4 +55,4 @@ clean:
 	rm -f test_gcov
 	rm -rf report
 
-.PHONY: all test_arithmetic test_other test_comparsion test_conversion test clean gcov_report valgrind_test
+.PHONY: all clean test gcov_report
