@@ -27,39 +27,40 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   return res;
 }
 
-int s21_support_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *tmp) {
+int s21_support_div(s21_decimal value_1, s21_decimal value_2,
+                    s21_decimal *result, s21_decimal *tmp) {
   int res = 0;
   s21_null_decimal(result);
   s21_null_decimal(tmp);
-  
+
   if (s21_is_less(value_1, value_2)) {
     return res;
   }
-  
+
   if (s21_is_equal(value_1, value_2)) {
     result->bits[0] = 1;
     return res;
   }
-  
+
   int dividend_bits = s21_get_last_bit(value_1);
-  
+
   for (int i = dividend_bits; i >= 0; i--) {
     s21_bit_move_left(tmp, 1);
-    
+
     if (s21_get_bit(&value_1, i)) {
       s21_set_bit(tmp, 0, 1);
     }
-    
+
     s21_bit_move_left(result, 1);
-    
+
     if (s21_is_greater_or_equal(*tmp, value_2)) {
       s21_decimal temp_remainder = {0};
       s21_sub(tmp, &value_2, &temp_remainder);
       *tmp = temp_remainder;
-      
+
       s21_set_bit(result, 0, 1);
     }
   }
-  
+
   return res;
 }

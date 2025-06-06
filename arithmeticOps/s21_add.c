@@ -25,11 +25,11 @@ int s21_add(s21_decimal *num1, s21_decimal *num2, s21_decimal *result) {
       s21_set_sign(result, sign1);
     }
   }
-  
+
   if (s21_is_zero(*result)) {
     s21_set_sign(result, 0);
   }
-  
+
   s21_set_scale(result, scale);
   return status;
 }

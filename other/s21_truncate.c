@@ -11,7 +11,6 @@ int s21_truncate(s21_decimal value, s21_decimal *result) {
     return 0;
   }
 
-  
   if (scale >= 27) {
     s21_null_decimal(result);
     s21_set_sign(result, sign);

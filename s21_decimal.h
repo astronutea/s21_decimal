@@ -9,11 +9,11 @@
 #include <string.h>
 
 typedef struct {
-    int bits[4];
+  int bits[4];
 } s21_decimal;
 
 typedef struct {
-    int bits[7];
+  int bits[7];
 } s21_big_decimal;
 
 #define OK 0
@@ -39,12 +39,15 @@ int s21_get_last_bit(s21_decimal num);
 int s21_mul10(s21_decimal *num);
 int s21_normalize(s21_decimal *num1, s21_decimal *num2);
 int s21_is_zero(s21_decimal value);
-int s21_bit_add(s21_decimal *value_1, s21_decimal *value_2, s21_decimal *result);
-int s21_bit_sub(s21_decimal *value_1, s21_decimal *value_2, s21_decimal *result);
+int s21_bit_add(s21_decimal *value_1, s21_decimal *value_2,
+                s21_decimal *result);
+int s21_bit_sub(s21_decimal *value_1, s21_decimal *value_2,
+                s21_decimal *result);
 
 int s21_add(s21_decimal *num1, s21_decimal *num2, s21_decimal *result);
 int s21_div(s21_decimal num1, s21_decimal num2, s21_decimal *result);
-int s21_support_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *tmp);
+int s21_support_div(s21_decimal value_1, s21_decimal value_2,
+                    s21_decimal *result, s21_decimal *tmp);
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_mul(s21_decimal num1, s21_decimal num2, s21_decimal *result);
 int s21_sub(s21_decimal *num1, s21_decimal *num2, s21_decimal *result);

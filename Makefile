@@ -45,6 +45,10 @@ gcov_report:
 	open report/index.html
 	rm -rf *.gcda *.gcno
 
+style:
+	clang-format -style=google $(COMMON_SRC) tests/tests.c s21_decimal.h -n
+	clang-format -style=google $(COMMON_SRC) tests/tests.c s21_decimal.h -i
+
 clean:
 	rm -f *.o *.a *.gcno *.gcda *.info
 	rm -f test
