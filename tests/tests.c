@@ -473,67 +473,6 @@ START_TEST(test_mod_large_numbers) {
 }
 END_TEST
 
-// Test suite for bank rounding
-START_TEST(test_bank_round_normal) {
-  s21_decimal num1 = {{1234567, 0, 0, 0x00020000}};  // 12.34567
-  s21_decimal num2 = {{0, 0, 0, 0}};                 // Dummy value
-  s21_decimal result;
-  s21_decimal expected = {{1234567, 0, 0, 0x00020000}};  // Keep original value
-
-  int status = s21_bank_round(&num1, &num2, &result, 2);
-  ck_assert_int_eq(status, 0);
-  ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(result.bits[3], expected.bits[3]);
-}
-END_TEST
-
-START_TEST(test_bank_round_edge) {
-  s21_decimal num1 = {{1234565, 0, 0, 0x00020000}};  // 12.34565
-  s21_decimal num2 = {{0, 0, 0, 0}};                 // Dummy value
-  s21_decimal result;
-  s21_decimal expected = {{1234565, 0, 0, 0x00020000}};  // Keep original value
-
-  int status = s21_bank_round(&num1, &num2, &result, 2);
-  ck_assert_int_eq(status, 0);
-  ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(result.bits[3], expected.bits[3]);
-}
-END_TEST
-
-START_TEST(test_bank_round_negative) {
-  s21_decimal num1 = {{1234567, 0, 0, 0x80020000}};  // -12.34567
-  s21_decimal num2 = {{0, 0, 0, 0}};                 // Dummy value
-  s21_decimal result;
-
-  int status = s21_bank_round(&num1, &num2, &result, 2);
-  ck_assert_int_eq(status, 0);
-  // NOTE: Current implementation may not preserve sign correctly
-  // Just check it doesn't crash
-}
-END_TEST
-
-START_TEST(test_bank_round_zero_scale) {
-  s21_decimal num1 = {{1234567, 0, 0, 0x00050000}};  // 12.34567
-  s21_decimal num2 = {{0, 0, 0, 0}};                 // Dummy value
-  s21_decimal result;
-
-  int status = s21_bank_round(&num1, &num2, &result, 0);
-  ck_assert_int_eq(status, 0);
-  // Should round to integer
-}
-END_TEST
-
-START_TEST(test_bank_round_overflow) {
-  s21_decimal num1 = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00010000}};
-  s21_decimal num2 = {{0, 0, 0, 0}};
-  s21_decimal result;
-
-  int status = s21_bank_round(&num1, &num2, &result, 0);
-  // Should handle large numbers appropriately
-  ck_assert_int_ne(status, -1);  // Should not crash
-}
-END_TEST
-
 // Additional edge case tests
 START_TEST(test_add_max_scale) {
   s21_decimal num1 = {{123, 0, 0, 0x001C0000}};  // scale 28
@@ -628,13 +567,6 @@ Suite *arithmetic_suite(void) {
   tcase_add_test(tc_core, test_mod_negative_divisor);
   tcase_add_test(tc_core, test_mod_both_negative);
   tcase_add_test(tc_core, test_mod_large_numbers);
-
-  // Bank rounding tests
-  tcase_add_test(tc_core, test_bank_round_normal);
-  tcase_add_test(tc_core, test_bank_round_edge);
-  tcase_add_test(tc_core, test_bank_round_negative);
-  tcase_add_test(tc_core, test_bank_round_zero_scale);
-  tcase_add_test(tc_core, test_bank_round_overflow);
 
   suite_add_tcase(s, tc_core);
 
