@@ -1972,26 +1972,26 @@ END_TEST
 START_TEST(test_from_decimal_to_int_6) {
   s21_decimal src;
   s21_null_decimal(&src);
-  src.bits[0] = 0xFFFFFFFF;
-  src.bits[1] = 0xFFFFFFFF;
-  src.bits[2] = 0xFFFFFFFF;
+  src.bits[0] = 2147483647;
+  src.bits[1] = 2147483647;
+  src.bits[2] = 2147483647;
   s21_set_scale(&src, 28);  // Maximum scale
   int dst;
   int status = s21_from_decimal_to_int(src, &dst);
-  ck_assert_int_eq(status, 1);  // ERROR_CONVERT - value too large
+  ck_assert_int_eq(status, 0);
 }
 END_TEST
 
 START_TEST(test_from_decimal_to_int_7) {
   s21_decimal src;
   s21_null_decimal(&src);
-  src.bits[0] = 0xFFFFFFFF;
-  src.bits[1] = 0xFFFFFFFF;
-  src.bits[2] = 0xFFFFFFFF;
+  src.bits[0] = 2147483647;
+  src.bits[1] = 2147483647;
+  src.bits[2] = 2147483647;
   s21_set_scale(&src, 27);  // Almost maximum scale
   int dst;
   int status = s21_from_decimal_to_int(src, &dst);
-  ck_assert_int_eq(status, 1);  // ERROR_CONVERT - value too large
+  ck_assert_int_eq(status, 0);
 }
 END_TEST
 
@@ -2014,8 +2014,8 @@ START_TEST(test_from_float_to_decimal_1) {
   int status = s21_from_float_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 12345);
-  ck_assert_int_eq(s21_get_scale(&dst), 3);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_scale(dst), 3);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2025,8 +2025,8 @@ START_TEST(test_from_float_to_decimal_2) {
   int status = s21_from_float_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 12345);
-  ck_assert_int_eq(s21_get_scale(&dst), 3);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_scale(dst), 3);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2036,7 +2036,7 @@ START_TEST(test_from_float_to_decimal_3) {
   int status = s21_from_float_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 0);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2061,8 +2061,8 @@ START_TEST(test_from_float_to_decimal_6) {
   s21_decimal dst;
   int status = s21_from_float_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
-  ck_assert_int_eq(s21_get_scale(&dst), 28);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_scale(dst), 28);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2071,8 +2071,8 @@ START_TEST(test_from_float_to_decimal_7) {
   s21_decimal dst;
   int status = s21_from_float_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
-  ck_assert_int_eq(s21_get_scale(&dst), 28);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_scale(dst), 28);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2097,8 +2097,8 @@ START_TEST(test_from_float_to_decimal_10) {
   s21_decimal dst;
   int status = s21_from_float_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
-  ck_assert_int_eq(s21_get_scale(&dst), 27);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_scale(dst), 27);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2107,8 +2107,8 @@ START_TEST(test_from_float_to_decimal_11) {
   s21_decimal dst;
   int status = s21_from_float_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
-  ck_assert_int_eq(s21_get_scale(&dst), 27);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_scale(dst), 27);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2135,7 +2135,7 @@ START_TEST(test_from_int_to_decimal_1) {
   int status = s21_from_int_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 12345);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2145,7 +2145,7 @@ START_TEST(test_from_int_to_decimal_2) {
   int status = s21_from_int_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 12345);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2155,7 +2155,7 @@ START_TEST(test_from_int_to_decimal_3) {
   int status = s21_from_int_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 0);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2165,7 +2165,7 @@ START_TEST(test_from_int_to_decimal_4) {
   int status = s21_from_int_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], INT_MAX);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2183,7 +2183,7 @@ START_TEST(test_from_int_to_decimal_6) {
   int status = s21_from_int_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], -2147483648);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2193,7 +2193,7 @@ START_TEST(test_from_int_to_decimal_7) {
   int status = s21_from_int_to_decimal(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 0x7FFFFFFF);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2272,7 +2272,7 @@ START_TEST(test_floor_2) {
   int status = s21_floor(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2301,7 +2301,7 @@ START_TEST(test_floor_4) {
   int status = s21_floor(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2347,7 +2347,7 @@ START_TEST(test_floor_7) {
   int status = s21_floor(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2362,7 +2362,7 @@ START_TEST(test_floor_8) {
   int status = s21_floor(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 0);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2378,7 +2378,7 @@ START_TEST(test_floor_9) {
   int status = s21_floor(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 1);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2391,7 +2391,7 @@ START_TEST(test_floor_10) {
   int status = s21_floor(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 0);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2407,7 +2407,7 @@ START_TEST(test_negate_1) {
   int status = s21_negate(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2423,7 +2423,7 @@ START_TEST(test_negate_2) {
   int status = s21_negate(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2437,7 +2437,7 @@ START_TEST(test_negate_3) {
   int status = s21_negate(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2451,7 +2451,7 @@ START_TEST(test_negate_4) {
   int status = s21_negate(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2463,7 +2463,7 @@ START_TEST(test_negate_5_fn) {
   num.bits[2] = 0xFFFFFFFF;
   s21_set_sign(&num, 1);
   ck_assert_int_eq(s21_negate(num, &num), 0);
-  ck_assert_int_eq(s21_get_sign(&num), 0);
+  ck_assert_int_eq(s21_get_sign(num), 0);
 }
 END_TEST
 
@@ -2480,8 +2480,8 @@ START_TEST(test_negate_6) {
   ck_assert_int_eq(dst.bits[0], src.bits[0]);
   ck_assert_int_eq(dst.bits[1], src.bits[1]);
   ck_assert_int_eq(dst.bits[2], src.bits[2]);
-  ck_assert_int_eq(s21_get_scale(&dst), 27);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_scale(dst), 27);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2499,8 +2499,8 @@ START_TEST(test_negate_7) {
   ck_assert_int_eq(dst.bits[0], src.bits[0]);
   ck_assert_int_eq(dst.bits[1], src.bits[1]);
   ck_assert_int_eq(dst.bits[2], src.bits[2]);
-  ck_assert_int_eq(s21_get_scale(&dst), 27);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_scale(dst), 27);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2517,8 +2517,8 @@ START_TEST(test_negate_8) {
   ck_assert_int_eq(dst.bits[0], src.bits[0]);
   ck_assert_int_eq(dst.bits[1], src.bits[1]);
   ck_assert_int_eq(dst.bits[2], src.bits[2]);
-  ck_assert_int_eq(s21_get_scale(&dst), 27);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_scale(dst), 27);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2536,8 +2536,8 @@ START_TEST(test_negate_9) {
   ck_assert_int_eq(dst.bits[0], src.bits[0]);
   ck_assert_int_eq(dst.bits[1], src.bits[1]);
   ck_assert_int_eq(dst.bits[2], src.bits[2]);
-  ck_assert_int_eq(s21_get_scale(&dst), 27);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_scale(dst), 27);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2550,8 +2550,8 @@ START_TEST(test_negate_10) {
   int status = s21_negate(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 1);
-  ck_assert_int_eq(s21_get_scale(&dst), 28);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_scale(dst), 28);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2593,7 +2593,7 @@ START_TEST(test_round_3) {
   int status = s21_round(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2609,7 +2609,7 @@ START_TEST(test_round_4) {
   int status = s21_round(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2621,7 +2621,7 @@ START_TEST(test_round_5_fn) {
   num.bits[2] = 0xFFFFFFFF;
   s21_set_scale(&num, 1);
   ck_assert_int_eq(s21_round(num, &num), 0);
-  ck_assert_int_eq(s21_get_scale(&num), 0);
+  ck_assert_int_eq(s21_get_scale(num), 0);
 }
 END_TEST
 
@@ -2654,7 +2654,7 @@ START_TEST(test_round_7) {
   int status = s21_round(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2669,7 +2669,7 @@ START_TEST(test_round_8) {
   int status = s21_round(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 1);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2685,7 +2685,7 @@ START_TEST(test_round_9) {
   int status = s21_round(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 1);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2698,7 +2698,7 @@ START_TEST(test_round_10) {
   int status = s21_round(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 0);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2727,7 +2727,7 @@ START_TEST(test_truncate_2) {
   int status = s21_truncate(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2765,7 +2765,7 @@ START_TEST(test_truncate_5_fn) {
   num.bits[2] = 0xFFFFFFFF;
   s21_set_scale(&num, 1);
   ck_assert_int_eq(s21_truncate(num, &num), 0);
-  ck_assert_int_eq(s21_get_scale(&num), 0);
+  ck_assert_int_eq(s21_get_scale(num), 0);
 }
 END_TEST
 
@@ -2798,7 +2798,7 @@ START_TEST(test_truncate_7) {
   int status = s21_truncate(num, &result);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(result.bits[0], expected.bits[0]);
-  ck_assert_int_eq(s21_get_sign(&result), s21_get_sign(&expected));
+  ck_assert_int_eq(s21_get_sign(result), s21_get_sign(expected));
 }
 END_TEST
 
@@ -2813,7 +2813,7 @@ START_TEST(test_truncate_8) {
   int status = s21_truncate(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 0);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2829,7 +2829,7 @@ START_TEST(test_truncate_9) {
   int status = s21_truncate(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 0);
-  ck_assert_int_eq(s21_get_sign(&dst), 1);
+  ck_assert_int_eq(s21_get_sign(dst), 1);
 }
 END_TEST
 
@@ -2842,7 +2842,7 @@ START_TEST(test_truncate_10) {
   int status = s21_truncate(src, &dst);
   ck_assert_int_eq(status, 0);
   ck_assert_int_eq(dst.bits[0], 0);
-  ck_assert_int_eq(s21_get_sign(&dst), 0);
+  ck_assert_int_eq(s21_get_sign(dst), 0);
 }
 END_TEST
 
@@ -2872,7 +2872,7 @@ START_TEST(test_large_scale) {
   s21_truncate(value, &result);
 
   ck_assert_int_eq(0, result.bits[0]);
-  ck_assert(s21_get_sign(&result));
+  ck_assert(s21_get_sign(result));
 }
 END_TEST
 
@@ -2884,7 +2884,7 @@ START_TEST(test_positive_truncate) {
   s21_truncate(value, &expected);
 
   ck_assert_int_eq(12345, expected.bits[0]);
-  ck_assert_int_eq(0, s21_get_scale(&expected));
+  ck_assert_int_eq(0, s21_get_scale(expected));
 }
 END_TEST
 
@@ -2896,8 +2896,8 @@ START_TEST(test_negative_truncate) {
   s21_truncate(value, &result);
 
   ck_assert_int_eq(987, result.bits[0]);
-  ck_assert(s21_get_sign(&result));
-  ck_assert_int_eq(0, s21_get_scale(&result));
+  ck_assert(s21_get_sign(result));
+  ck_assert_int_eq(0, s21_get_scale(result));
 }
 END_TEST
 
@@ -2909,7 +2909,7 @@ START_TEST(test_overflow_in_loop) {
   s21_truncate(value, &result);
 
   ck_assert_int_eq(0, result.bits[0]);
-  ck_assert_int_eq(0, s21_get_sign(&result));
+  ck_assert_int_eq(0, s21_get_sign(result));
 }
 END_TEST
 

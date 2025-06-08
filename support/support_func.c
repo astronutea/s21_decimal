@@ -15,8 +15,8 @@ int s21_mul10(s21_decimal *num) {
 }
 
 int s21_normalize(s21_decimal *num1, s21_decimal *num2) {
-  int scale1 = s21_get_scale(num1);
-  int scale2 = s21_get_scale(num2);
+  int scale1 = s21_get_scale(*num1);
+  int scale2 = s21_get_scale(*num2);
   int result = 0;
 
   while (scale1 < scale2 && scale1 < 28) {
@@ -49,7 +49,7 @@ int s21_is_zero(s21_decimal value) {
   return status;
 }
 
-int s21_bit_add(s21_decimal *value_1, s21_decimal *value_2, s21_decimal *res) {
+int s21_bit_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *res) {
   int carry = 0;
   int sign = s21_get_sign(value_1);
   int status = 0;
@@ -68,7 +68,7 @@ int s21_bit_add(s21_decimal *value_1, s21_decimal *value_2, s21_decimal *res) {
   return status;
 }
 
-int s21_bit_sub(s21_decimal *value_1, s21_decimal *value_2, s21_decimal *res) {
+int s21_bit_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *res) {
   int borrow = 0;
 
   for (int i = 0; i < 96; i++) {
@@ -90,13 +90,13 @@ int s21_bit_sub(s21_decimal *value_1, s21_decimal *value_2, s21_decimal *res) {
 
 void s21_bit_move_left(s21_decimal *num, int k) {
   for (int i = 95; i >= k; i--) {
-    s21_set_bit(num, i, s21_get_bit(num, i - k));
+    s21_set_bit(num, i, s21_get_bit(*num, i - k));
   }
   for (int i = k - 1; i >= 0; i--) s21_set_bit(num, i, 0);
 }
 
 int s21_get_last_bit(s21_decimal num) {
   int bitLast = 95;
-  for (; (bitLast >= 0) && (!s21_get_bit(&num, bitLast));) bitLast -= 1;
+  for (; (bitLast >= 0) && (!s21_get_bit(num, bitLast));) bitLast -= 1;
   return bitLast;
 }

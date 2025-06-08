@@ -7,15 +7,15 @@ int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
     return 0;
   }
 
-  int sign1 = s21_get_sign(&value_1);
-  int sign2 = s21_get_sign(&value_2);
+  int sign1 = s21_get_sign(value_1);
+  int sign2 = s21_get_sign(value_2);
 
   if (sign1 != sign2) {
     return sign1 > sign2;
   }
 
-  int scale1 = s21_get_scale(&value_1);
-  int scale2 = s21_get_scale(&value_2);
+  int scale1 = s21_get_scale(value_1);
+  int scale2 = s21_get_scale(value_2);
 
   if (scale1 != scale2) {
     if (sign1 == 0) {

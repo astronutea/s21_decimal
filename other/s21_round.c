@@ -8,8 +8,8 @@ int s21_round(s21_decimal value, s21_decimal *result) {
     return 1;
   }
 
-  int scale = s21_get_scale(&value);
-  int sign = s21_get_sign(&value);
+  int scale = s21_get_scale(value);
+  int sign = s21_get_sign(value);
 
   if (scale == 0) {
     *result = value;

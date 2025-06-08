@@ -6,22 +6,22 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   s21_decimal a = value_1, b = value_2;
   s21_normalize(&a, &b);
 
-  int scale = s21_get_scale(&a);
-  int sign1 = s21_get_sign(&a);
-  int sign2 = s21_get_sign(&b);
+  int scale = s21_get_scale(a);
+  int sign1 = s21_get_sign(a);
+  int sign2 = s21_get_sign(b);
   int status = 0;
 
   if (sign1 == sign2) {
-    status = s21_bit_add(&a, &b, result);
+    status = s21_bit_add(a, b, result);
     s21_set_sign(result, sign1);
   } else {
     s21_set_sign(&a, 0);
     s21_set_sign(&b, 0);
     if (s21_is_less_or_equal(a, b)) {
-      status = s21_bit_sub(&b, &a, result);
+      status = s21_bit_sub(b, a, result);
       s21_set_sign(result, sign2);
     } else {
-      status = s21_bit_sub(&a, &b, result);
+      status = s21_bit_sub(a, b, result);
       s21_set_sign(result, sign1);
     }
   }

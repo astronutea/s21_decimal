@@ -4,8 +4,8 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   result->bits[0] = result->bits[1] = result->bits[2] = result->bits[3] = 0;
   int res = 0;
   int sign = 0;
-  int sign1 = s21_get_sign(&value_1);
-  int sign2 = s21_get_sign(&value_2);
+  int sign1 = s21_get_sign(value_1);
+  int sign2 = s21_get_sign(value_2);
   if (sign1 != sign2) sign = 1;
   s21_set_sign(&value_1, 0);
   s21_set_sign(&value_2, 0);
@@ -13,8 +13,8 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     res = 3;
   } else {
     s21_decimal tmp = {0};
-    int scale1 = s21_get_scale(&value_1);
-    int scale2 = s21_get_scale(&value_2);
+    int scale1 = s21_get_scale(value_1);
+    int scale2 = s21_get_scale(value_2);
     s21_set_scale(&value_1, 0);
     s21_set_scale(&value_2, 0);
     res = s21_support_div(value_1, value_2, result, &tmp);
@@ -47,7 +47,7 @@ int s21_support_div(s21_decimal value_1, s21_decimal value_2,
   for (int i = dividend_bits; i >= 0; i--) {
     s21_bit_move_left(tmp, 1);
 
-    if (s21_get_bit(&value_1, i)) {
+    if (s21_get_bit(value_1, i)) {
       s21_set_bit(tmp, 0, 1);
     }
 
